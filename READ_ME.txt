@@ -5,3 +5,4 @@ game :folder with all unity code
 ia :  folder with matlab code 
  containing the artificial intelligence
 	
+edit : yay ca marche
