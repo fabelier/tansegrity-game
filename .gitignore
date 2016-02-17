@@ -7,7 +7,12 @@
 [Ll]ibrary/
 sysinfo.txt
 *.stackdump
- 
+
+game/[Tt]emp/
+game/[Oo]bj/
+game/[Bb]uild
+game/[Ll]ibrary/
+
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
