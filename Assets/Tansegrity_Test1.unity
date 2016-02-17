@@ -1997,13 +1997,14 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 678406867}
+  - 114: {fileID: 678406868}
   m_Layer: 0
   m_Name: Tansegirty1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &678406867
 Transform:
   m_ObjectHideFlags: 0
@@ -2028,6 +2029,21 @@ Transform:
   - {fileID: 1008800023}
   m_Father: {fileID: 0}
   m_RootOrder: 4
+--- !u!114 &678406868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 678406866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4804c648ddaf94b9af8bea0394a546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toControl1: {fileID: 898583239}
+  toControl2: {fileID: 1245874524}
+  toControl3: {fileID: 1556847327}
+  intensity: 0.1
 --- !u!1 &701147461
 GameObject:
   m_ObjectHideFlags: 0
@@ -2589,6 +2605,12 @@ Transform:
 Transform:
   m_PrefabParentObject: {fileID: 441896, guid: 9b8ff118d3e1bac42a88f910b60a3080, type: 2}
   m_PrefabInternal: {fileID: 1579767327}
+--- !u!114 &898583239 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11443380, guid: b0f48e85967ff7f4bbba86e0c0624f26,
+    type: 2}
+  m_PrefabInternal: {fileID: 1081008412}
+  m_Script: {fileID: 11500000, guid: 6eadbe2aab5844343af41c04bbb1144a, type: 3}
 --- !u!1001 &906597634
 Prefab:
   m_ObjectHideFlags: 0
@@ -3576,6 +3598,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cafb4752375f32b46b04cae519e602f3, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1245874524 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11443380, guid: b0f48e85967ff7f4bbba86e0c0624f26,
+    type: 2}
+  m_PrefabInternal: {fileID: 1785477087}
+  m_Script: {fileID: 11500000, guid: 6eadbe2aab5844343af41c04bbb1144a, type: 3}
 --- !u!4 &1256473370 stripped
 Transform:
   m_PrefabParentObject: {fileID: 497978, guid: 62e8efca8818bb545ab6fc7eaa69317d, type: 2}
@@ -4362,6 +4390,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1534237571}
+--- !u!114 &1556847327 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11443380, guid: b0f48e85967ff7f4bbba86e0c0624f26,
+    type: 2}
+  m_PrefabInternal: {fileID: 631203698}
+  m_Script: {fileID: 11500000, guid: 6eadbe2aab5844343af41c04bbb1144a, type: 3}
 --- !u!1001 &1579767327
 Prefab:
   m_ObjectHideFlags: 0
