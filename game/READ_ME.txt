@@ -1,1 +1,0 @@
-TO run the project as a non develloper go to Projects Settings and run Tansegrity.exe
