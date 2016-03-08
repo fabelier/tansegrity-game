@@ -10,8 +10,10 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            geneticAlgo.gradientDescent GD = new geneticAlgo.gradientDescent(100,2);
+            geneticAlgo.gradientDescent GD;
+            GD = new geneticAlgo.gradientDescent(1000, 0, 100, 10);
             GD.update();
+            Console.WriteLine("eval value obtained : {0}", GD.getBestIndiv().getEvalValue());
         }
     }
 }
