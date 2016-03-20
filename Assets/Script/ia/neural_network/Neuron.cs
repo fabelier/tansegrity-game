@@ -7,8 +7,8 @@ namespace Nn
 {
     public struct Input
     {
-        public double input { get; set; }
-        public double weight { get; set; }
+        public double input;// { get; set; }
+        public double weight;// { get; set; }
     }
 
     public class Neuron  // enlever le MonoBehaviour
@@ -19,8 +19,10 @@ namespace Nn
         //public int in_position { } 
 
         private System.Random rand;
-        
+
+        // ===========================================================================================================
         // ======== CONSTRUCTOR ==============================
+        // ===========================================================================================================
 
         // this Neuron is initialited with random weights
         // and Input.input values at 0
@@ -79,12 +81,14 @@ namespace Nn
             // Take the descision
             main(inputs);
         }
+        // ===========================================================================================================
         //========== Methods =======================================
+        // ===========================================================================================================
 
             // ===== GET/SET =======================================
         public void setWeight(double weights, int position) {
             if (inputs.Count <= position)      
-                inputs[position].weight = weights;
+                this.inputs[position].weight = weights;
             else
             {
                 Debug.Log("try to set weight in a too high position");
@@ -95,13 +99,14 @@ namespace Nn
         public void setInput(double input, int position)
         {
             if (inputs.Count <= position)
-                inputs[position].input = input;
+                this.inputs[position].input = input;
             else
             {
                 Debug.Log("try to set input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
+        
 
         public void setInput(Input input, int position)
         {
@@ -114,12 +119,48 @@ namespace Nn
             }
         }
 
-           // ===== USEFUL Methods =================================
+        public double getInput(int position)
+        {
+            if (inputs.Count <= position)
+                return inputs[position].input;
+            else
+            {
+                Debug.Log("try to get input in a too high position");
+                throw new IndexOutOfRangeException();
+            }
+        }
+
+        // Get the complete list of inputs stored in the Input struct
+        public List<double> getAllInput()
+        {
+            List<double> tmp_input = new List<double>();
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                tmp_input.Add(inputs[i].input);
+            }
+            return tmp_input;
+        }
+
+        // ===== USEFUL Methods =================================
 
         private void main(List<Input> inputs)
         {
             double val = combinaison(inputs);
             activation(val);
+        }
+
+        public double fire()
+        {
+            try
+            {
+                return activation(combinaison(inputs));
+            }
+            catch
+            {
+                Debug.Log("You have not set the Inputs of the neron correctly");
+                //throw new TypeInitializationException('Neuron',ArgumentNullException de); // J'arrive pas a gérer l'exeption
+                throw new Exception("You do not have set the input, I guess");
+            }
         }
 
         // Function that sum up the weigthed values returned by the input neurons 

@@ -66,12 +66,53 @@ namespace Nn {
         
 
             // = USEFULL METHODS =================
-        public List<bool> fire(List<double> input)
+        public List<bool> fire(List<double> network_input)
         {
             // test
                 // si input.Count == network[1].Count
-                // tout les input 0<...<1
+            if(network_input.Count != network[0].Count)
+            {
+                Debug.Log("You may have as many inputs as the number of neuron in the first layer.");
+                throw new System.Exception();
+            }
+
+            // tout les input 0<...<1
             // fait le transfert layer par layer des input
+            double control;
+            double threashold = 0.5; // advice = 0.5
+            bool tmp_output;
+            List<bool> output = new List<bool>();
+            for (int i = 0; i < network.Count; i++)  // boucle in network
+            {
+                for (int j = 0; j < network[i].Count; j++) // boucle in each layer to set the inputs
+                {
+                    if (i == 1) // First layer have to be taken differently
+                    {
+                        network[i][j].setInput(network_input[j], 1);
+                        control = network[i][j].fire();
+                    }
+                    else
+                    {
+                        for (int k = 0; k < network[i - 1].Count; k++) // Parse the previous layer and take outputs of neurons
+                        {
+                            network[i][j].setInput(network[i - 1][k].getInput(k),k); 
+                        }
+                        control = network[i][j].fire();
+                        if (i == network[i].Count - 1 && control != -1)  // At the last layer, build the output
+                        {
+                            if (control < threashold) tmp_output = false;
+                            else tmp_output = true;
+                            output.Add(tmp_output);
+                        }
+                    }
+                    if(control == -1) // Gestion des Execption
+                    {
+                        Debug.Log("one Neuron returned -1 !!");
+                        throw new System.Exception("Arreted in Neural_network.fire(). got bad value");
+                    }
+                }
+            }
+            return output;
 
         }
 
