@@ -8,28 +8,32 @@ namespace Nn {
         public List<List<Neuron>> network;
         List<bool> output;
 
+        private System.Random rand;
+
         // ====== CONSTRUCTORS ==================
 
         // Make a neural network with all input at zero and random weights
         // minimal constructor
-        public Neural_network(int n_Layer, List<int> n_neuronIlayer)
+        public Neural_network( List<int> n_neuronIlayer)
         {
             Neuron tmp;
             List<Neuron> tmp_layer;
             network = new List<List<Neuron>>();
+            int n_Layer = n_neuronIlayer.Count;
+            rand = new System.Random();
             for (int i = 0; i < n_Layer; i++)
             {
                 tmp_layer = new List<Neuron>();
                 for (int j = 0; j < n_neuronIlayer[i]; j++)
                 {
-                    if (i == 1)  // special treatment for first layer, that take input of the network
+                    if (i == 0)  // special treatment for first layer, that take input of the network
                     {                                                // for this case the weight is    
                         List<double> n = new List<double>(); n.Add(1); // a List of one element valued at 1 
                         tmp = new Neuron(n);
                     }
                     else
                     {
-                        tmp = new Neuron(n_neuronIlayer[i - 1]); // fill Input with n_neuronIlayer[i - 1] random values
+                        tmp = new Neuron(n_neuronIlayer[i - 1], rand); // fill Input with n_neuronIlayer[i - 1] random values
                     }
                     tmp_layer.Add(tmp);
                 }
@@ -62,14 +66,28 @@ namespace Nn {
 
             // = GET/SET =========================
 
-       
         
+            // = To visualize ====================
+
+        public void toString()
+        {
+            string str = "";
+            for (int i = 0; i < network.Count; i++)
+            {
+                str += string.Format("Layer {0} \n", i);
+                for (int j= 0; j < network[i].Count; j++)
+                {
+                    str += string.Format("     Neuron {0} :\n {1}", j, network[i][j].toString(false));
+                }
+            }
+            Debug.Log(str);
+        }
 
             // = USEFULL METHODS =================
         public List<bool> fire(List<double> network_input)
         {
             // test
-                // si input.Count == network[1].Count
+                // si la taille de network_input n'est pas coherente == erreur 
             if(network_input.Count != network[0].Count)
             {
                 Debug.Log("You may have as many inputs as the number of neuron in the first layer.");
@@ -86,21 +104,24 @@ namespace Nn {
             {
                 for (int j = 0; j < network[i].Count; j++) // boucle in each layer to set the inputs
                 {
-                    if (i == 1) // First layer have to be taken differently
+                    
+                    if (i == 0) // First layer have to be taken differently
                     {
-                        network[i][j].setInput(network_input[j], 1);
+                        network[i][j].setInput(network_input[j], 0);
                         control = network[i][j].fire();
                     }
                     else
                     {
                         for (int k = 0; k < network[i - 1].Count; k++) // Parse the previous layer and take outputs of neurons
                         {
-                            network[i][j].setInput(network[i - 1][k].getInput(k),k); 
+                            network[i][j].setInput(network[i - 1][k].fire_val,k);  // get the output of Neurons in layer i-1
                         }
                         control = network[i][j].fire();
-                        if (i == network[i].Count - 1 && control != -1)  // At the last layer, build the output
+                        
+                        if (i == network.Count - 1 && control != -1)  // At the last layer, build the output
                         {
-                            if (control < threashold) tmp_output = false;
+                            toString();
+                            if (control < threashold) tmp_output = false;  // threshold mis a 0.5
                             else tmp_output = true;
                             output.Add(tmp_output);
                         }

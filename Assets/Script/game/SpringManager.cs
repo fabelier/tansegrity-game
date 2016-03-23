@@ -47,7 +47,7 @@ public class SpringManager : MonoBehaviour {
 	}
 
 	public void upRaideur(Spring toControl){
-		float tmp;
+
 
 		if (toControl.GetComponent<Spring>().raideur < 2000) {
 			toControl.GetComponent<Spring>().raideur += toControl.GetComponent<Spring>().raideur * intensity;

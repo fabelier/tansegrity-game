@@ -18,7 +18,7 @@ namespace Nn
         //public int in_layer { get; set; }
         //public int in_position { } 
 
-        private System.Random rand;
+        //private System.Random rand; // obsolete
 
         // ===========================================================================================================
         // ======== CONSTRUCTOR ==============================
@@ -26,12 +26,12 @@ namespace Nn
 
         // this Neuron is initialited with random weights
         // and Input.input values at 0
-        public Neuron(int n_weights)
+        public Neuron(int n_weights, System.Random rand)
         {
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            rand = new System.Random();
+            //rand = new System.Random();  //obsolete
             for (int i = 0; i < n_weights; i++)
             {
                 tmp = new Input();
@@ -39,6 +39,7 @@ namespace Nn
                 inputs.Add(tmp);
             }
         }
+
 
         public Neuron(List<double> weight){
             // Input fill
@@ -81,14 +82,20 @@ namespace Nn
             // Take the descision
             main(inputs);
         }
+
+        
+
         // ===========================================================================================================
         //========== Methods =======================================
         // ===========================================================================================================
 
-            // ===== GET/SET =======================================
+        // ===== GET/SET =======================================
         public void setWeight(double weights, int position) {
-            if (inputs.Count <= position)      
-                this.inputs[position].weight = weights;
+            if (inputs.Count > position)
+            {
+                double save_input = this.inputs[position].input;
+                this.inputs[position] = new Input { input = save_input, weight = weights };
+            }
             else
             {
                 Debug.Log("try to set weight in a too high position");
@@ -98,8 +105,11 @@ namespace Nn
 
         public void setInput(double input, int position)
         {
-            if (inputs.Count <= position)
-                this.inputs[position].input = input;
+            if (inputs.Count > position)
+            {
+                double save_weight = this.inputs[position].weight;
+                this.inputs[position] = new Input { input = input, weight = save_weight  };
+            }
             else
             {
                 Debug.Log("try to set input in a too high position");
@@ -110,22 +120,22 @@ namespace Nn
 
         public void setInput(Input input, int position)
         {
-            if( inputs. Count <= position)
+            if( inputs.Count > position)
                 inputs[position] = input;
             else
             {
-                Debug.Log("try to set Input in a too high position");
+                Debug.Log("setInput: try to set Input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
 
         public double getInput(int position)
         {
-            if (inputs.Count <= position)
+            if (inputs.Count > position)
                 return inputs[position].input;
             else
             {
-                Debug.Log("try to get input in a too high position");
+                Debug.Log("getInput :try to get input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
@@ -139,6 +149,21 @@ namespace Nn
                 tmp_input.Add(inputs[i].input);
             }
             return tmp_input;
+        }
+
+
+        // ===== TO VISUALIZE ===================================
+
+        public string toString(bool debug)
+        {
+            string str = "";
+            //str = string.Format("Neuron have : \n");
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                str += string.Format("\t \t Input {0} :input ={1}, weight= {2} \n", i,inputs[i].input,inputs[i].weight);
+            }
+            if (debug) Debug.Log(str);
+            return str;
         }
 
         // ===== USEFUL Methods =================================
