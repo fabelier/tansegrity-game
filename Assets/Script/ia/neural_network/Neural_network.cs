@@ -61,12 +61,25 @@ namespace Nn {
             }
         }
 
+        public Neural_network(Neural_network neuroNet)
+        {
+            network = neuroNet.getNetwork();
+            output = neuroNet.getOutput();
+        }
 
         // ===== METHODS =========================
 
             // = GET/SET =========================
-
+        public List<List<Neuron>> getNetwork()
+        {
+            return this.network;
+        }
         
+        public List<bool> getOutput()
+        {
+            return this.output;
+        }
+
             // = To visualize ====================
 
         public void toString()
