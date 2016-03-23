@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace geneticAlgo
 {
@@ -11,6 +10,8 @@ namespace geneticAlgo
         double crossoverProba;
         double mutationProba;
         Random rand;
+        
+        // ====== CONSTRUCTORS ==================
 
         public geneticOperator()
         {
@@ -18,6 +19,9 @@ namespace geneticAlgo
             mutationProba = 0.01;
             rand = new Random();
         }
+
+        // ====== METHODS ==================
+
         public List<indiv> crossover(indiv A, indiv B)
         {
             int posCrossingover = rand.Next(0, A.getSize());
@@ -62,5 +66,7 @@ namespace geneticAlgo
             }
             return newPop;
         }
+
+        // ====== GET/SET ==================
     }
 }

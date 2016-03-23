@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using UnityEngine;
 
 namespace geneticAlgo
 {
@@ -12,11 +12,11 @@ namespace geneticAlgo
         int sizePop;
         int nbIterationMax;
         int nbNeighbors;
-        Random rand;
+        System.Random rand;
         indiv bestIndiv;
         geneticOperator GO;
 
-        //constructors
+        // ====== CONSTRUCTORS ==================
 
         public gradientDescent()
         {
@@ -24,7 +24,7 @@ namespace geneticAlgo
             this.nbNeighbors = 100;
             this.sizePop = 1;
             this.GO = new geneticOperator();
-            this.rand = new Random();
+            this.rand = new System.Random();
             createDebugPop(2);
             this.bestIndiv = pop[0];
         }
@@ -34,12 +34,12 @@ namespace geneticAlgo
             this.nbNeighbors = nbNeighbors;
             this.sizePop = sizePop;
             this.GO = new geneticOperator();
-            this.rand = new Random();
+            this.rand = new System.Random();
             createDebugPop(dataSizeInIndivs);
             this.bestIndiv = pop[0];
         }
 
-        //methods
+        // ====== METHODS ==================
 
         public void update()
         {
@@ -47,7 +47,10 @@ namespace geneticAlgo
             List<indiv> selectedIndivs;
             for (int i = 0; i < nbIterationMax; i++)
             {
-
+                if (i % (nbIterationMax / 10) == 0)
+                {
+                    Debug.Log(string.Format("iteration : {0}", i));
+                }
                 neighborhood = new List<indiv>();
                 neighborhood.AddRange(pop);
                 // if the population contains only one indiv this will artificially creates more indivs to be able, then, to select the best ones.
@@ -97,7 +100,6 @@ namespace geneticAlgo
             int round = 1;
             double posFirst;
             double posSecond;
-            int test;
             // transform eval values to probas
             do
             {
@@ -115,13 +117,11 @@ namespace geneticAlgo
                 // choosing 2 random competitors accordingly to the probas
                 posFirst = rand.NextDouble();
                 posSecond = rand.NextDouble();
-                test = 0;
                 for (int i = 0; i < proba.Count; i++)
                 {
                     if (posFirst <= proba[i])
                     {
                         firstCompetitor = new indiv(pop[i]);
-                        test = i;
                         break;
                     }
                 }
@@ -130,7 +130,6 @@ namespace geneticAlgo
                     if (posSecond <= proba[i])
                     {
                         secondCompetitor = new indiv(pop[i]);
-                        test = i;
                         break;
                     }
                 }
@@ -194,6 +193,9 @@ namespace geneticAlgo
                 Console.WriteLine("\tEval Value {0} : {1}", i, pop[i].getEvalValue());
             }
         }
+
+        // ====== GET/SET ==================
+
         public indiv getBestIndiv()
         {
             return bestIndiv;

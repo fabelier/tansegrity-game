@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -56,7 +55,7 @@ namespace Nn
         {
             if(weight.Count != input.Count)
             {
-                Debug.Log("The weight and the input list have different size ! What did you expect ?");
+                Console.WriteLine("The weight and the input list have different size ! What did you expect ?");
                 throw new IndexOutOfRangeException();
             }
             // Input fill
@@ -87,22 +86,22 @@ namespace Nn
 
             // ===== GET/SET =======================================
         public void setWeight(double weights, int position) {
-            if (inputs.Count <= position)      
-                this.inputs[position].weight = weights;
+            if (position < inputs.Count)
+                this.inputs[position]= new Input { input = this.inputs[position].input, weight = weights };
             else
             {
-                Debug.Log("try to set weight in a too high position");
+                Console.WriteLine("try to set weight in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
 
         public void setInput(double input, int position)
         {
-            if (inputs.Count <= position)
-                this.inputs[position].input = input;
+            if (position < inputs.Count)
+                this.inputs[position] = new Input { input = input, weight = this.inputs[position].weight };
             else
             {
-                Debug.Log("try to set input in a too high position");
+                Console.WriteLine("try to set input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
@@ -114,7 +113,7 @@ namespace Nn
                 inputs[position] = input;
             else
             {
-                Debug.Log("try to set Input in a too high position");
+                Console.WriteLine("try to set Input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
@@ -125,7 +124,7 @@ namespace Nn
                 return inputs[position].input;
             else
             {
-                Debug.Log("try to get input in a too high position");
+                Console.WriteLine("try to get input in a too high position");
                 throw new IndexOutOfRangeException();
             }
         }
@@ -157,7 +156,7 @@ namespace Nn
             }
             catch
             {
-                Debug.Log("You have not set the Inputs of the neron correctly");
+                Console.WriteLine("You have not set the Inputs of the neron correctly");
                 //throw new TypeInitializationException('Neuron',ArgumentNullException de); // J'arrive pas a gérer l'exeption
                 throw new Exception("You do not have set the input, I guess");
             }
@@ -181,7 +180,7 @@ namespace Nn
         public double activation(double val, double lambda =1.0){
 
             // ACTIVATION FUNCTION
-            val = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
+            val = 1 / (1 + Math.Exp( (float) (-lambda * val)));  // sigmoid function
             this.fire_val = val;
             return val;
         }
