@@ -73,7 +73,7 @@ namespace geneticAlgo
             }
         }
 
-        //change 
+        //add a double to all weigths of all neurons of all layers of the neural network
         public void addDoubleToWeigths(double d)
         {
             for(int layer_num = 0; layer_num < Nn.getNetwork().Count; layer_num++)
@@ -82,7 +82,7 @@ namespace geneticAlgo
                 {
                     for (int weigth_num = 0; weigth_num < Nn.getNetwork()[layer_num][Neuron_num].getNbWeigths(); weigth_num++)
                     {
-                        Nn.setWeigth(d, layer_num, Neuron_num, weigth_num);
+                        Nn.setWeigth(Nn.getWeigth(layer_num, Neuron_num, weigth_num)+d, layer_num, Neuron_num, weigth_num);
                     }
                 }
             }
@@ -90,10 +90,13 @@ namespace geneticAlgo
 
         // ====== GET/SET ==================
 
+        //set one weigth of the neural network to newData
         public void setDataAtPos(int layer_num, int Neuron_num, int weigth_num, double newData)
         {
             Nn.setWeigth(newData, layer_num, Neuron_num, weigth_num);
         }
+
+        //getter/setter for Nn
         public void setNeuralNetwork(Nn.Neural_network Nn)
         {
             this.Nn = Nn;
@@ -102,10 +105,14 @@ namespace geneticAlgo
         {
             return Nn;
         }
+
+        //return one layer of the neural network
         public List<Nn.Neuron> getLayer(int layer_num)
         {
             return Nn.getLayer(layer_num);
         }
+
+        //return all layers of Nn between startpos and endpos 
         public List<List<Nn.Neuron>> getLayersRange(int startpos, int endpos)
         {
             List<List<Nn.Neuron>> layers = new List<List<Nn.Neuron>>();
@@ -115,10 +122,14 @@ namespace geneticAlgo
             }
             return layers;
         }
+
+        //return one neuron of Nn
         public Nn.Neuron getNeuron(int layer_num, int Neuron_num)
         {
             return Nn.getNeuron(layer_num, Neuron_num);
         }
+
+
         public int getNbLayer()
         {
             return Nn.getNbLayer();
