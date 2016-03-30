@@ -108,6 +108,10 @@ namespace Nn {
         {
             network[layer_num][Neuron_num].setWeight(w, weigth_num);
         }
+        public double getWeigth(int layer_num, int Neuron_num, int weigth_num)
+        {
+            return network[layer_num][Neuron_num].getWeigth(weigth_num);
+        }
         public void addNeuron(int layer_num, Neuron neur)
         {
             network[layer_num].Add(neur);
