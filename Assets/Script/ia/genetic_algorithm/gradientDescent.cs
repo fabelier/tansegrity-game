@@ -11,82 +11,82 @@ namespace geneticAlgo
         List<indiv> pop;
         int sizePop;
         int nbIterationMax;
-        int nbNeighbors;
         System.Random rand;
         indiv bestIndiv;
         geneticOperator GO;
 
         // ====== CONSTRUCTORS ==================
 
+        // basic constuctor not very usefull
         public gradientDescent()
         {
             this.nbIterationMax = 1000;
-            this.nbNeighbors = 100;
-            this.sizePop = 1;
+            this.sizePop = 10;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
-            createDebugPop(2);
+            createPop(new List<int>(new int[] { 5, 4, 4,3 }));
             this.bestIndiv = pop[0];
         }
-        public gradientDescent(int nbIterationMax, int nbNeighbors, int sizePop, int dataSizeInIndivs)
+
+        // construct a gradientDescent which will evolve sizePop neural networks for nbIterationMax iterations
+        // the 1st element of nbNeuronByLayers is the nbr of neurons on the input layer, and the last element is the number of outputs of the last layer
+        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers)
         {
             this.nbIterationMax = nbIterationMax;
-            this.nbNeighbors = nbNeighbors;
             this.sizePop = sizePop;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
-            createDebugPop(dataSizeInIndivs);
+            createPop(nbNeuronByLayers);
             this.bestIndiv = pop[0];
         }
 
         // ====== METHODS ==================
 
+        //main loop : select by tournament some of the best indivs of the pop, then apply genetic operation on them to create other indivs
+        //then select sizePop nbr of indiv in this new pop, and go to the next iteration
         public void update()
         {
             List<indiv> neighborhood;
             List<indiv> selectedIndivs;
             for (int i = 0; i < nbIterationMax; i++)
             {
-                if (i % (nbIterationMax / 10) == 0)
-                {
-                    Debug.Log(string.Format("iteration : {0}", i));
-                }
                 neighborhood = new List<indiv>();
                 neighborhood.AddRange(pop);
-                // if the population contains only one indiv this will artificially creates more indivs to be able, then, to select the best ones.
-                if (nbNeighbors != 0)
-                {
-                    neighborhood.AddRange(generateNeighbors(pop[0], nbNeighbors));
-                }
 
-                // selection
-                //selectedIndivs = neighborhood;
-                selectedIndivs = tournamentSelection(neighborhood, neighborhood.Count/2);
+                // selection by tournament
+                selectedIndivs = tournamentSelection(neighborhood, neighborhood.Count / 2);
 
-                //genetic changes in the pop
-                neighborhood = GO.applyGeneticChanges(selectedIndivs);
+                //apply changes on the selected pop to create new indivs
+                neighborhood = GO.applyGeneticChanges(selectedIndivs, sizePop);
+
                 //eval the new pop
                 for (int ind = 0; ind < neighborhood.Count; ind++)
                 {
                     neighborhood[ind].eval();
-                    //Console.WriteLine("evals : {0}, data0 : {1}, data1 : {2}", neighborhood[ind].getEvalValue(), neighborhood[ind].getData()[0], neighborhood[ind].getData()[1]);
                 }
 
                 // select the sizePop best indivs from the newly generated pop to have the same size as pop for the next iteration
                 pop = simpleSelection(neighborhood);
-                if (i % 10 == 0)
+
+                bestIndiv = pop[0];
+
+                //print the best indiv every 10% of the nbIterationMax
+                if (i % (nbIterationMax / 10) == 0)
                 {
-                    Console.WriteLine("iteration {0}, best eval : {1}", i, pop[0].getEvalValue());
+                    Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", i, bestIndiv));
                 }
             }
-            this.bestIndiv = pop[0];
         }
+
+        // return a pop resized with sizePop indivs with the best evalValues
         public List<indiv> simpleSelection(List<indiv> pop)
         {
-
             pop = pop.OrderByDescending(x => x.getEvalValue()).ToList();
             return pop.GetRange(0, sizePop);
         }
+
+        //for each round this method will choose 2 indivs with probabilities based on their evalValue, and select the one which has the best evalValue
+        //at the end it will return a list containing the indivs selected at each round
         public List<indiv> tournamentSelection(List<indiv> pop, int numberOfRounds = 2)
         {
             //choose 2 indiv randomly with proba accorded to their eval values and select the best out of the two. Repeat the process numberOfRounds times.
@@ -148,49 +148,16 @@ namespace geneticAlgo
             } while (round <= numberOfRounds);
             return winners;
         }
-        public List<indiv> generateNeighbors(indiv I, int nbNeighbors)
-        {
-            List<indiv> neighborhood = new List<indiv>();
-            indiv neighboor;
-            for (int nei = 0; nei < nbNeighbors; nei++)
-            {
-                neighboor = mutate(I);
-                neighboor.eval();
-                neighborhood.Add(neighboor);
-            }
-            return neighborhood;
-        }
-        public indiv mutate(indiv I)
-        {
-            double mutation;
-            indiv mutant;
-            mutation = rand.NextDouble() * 0.2 - 0.1;
-            mutant = new indiv(I.getData());
-            mutant.addDoubleToData(mutation);
-            return (mutant);
-        }
-        public void createDebugPop(int sizeData)
+
+        //create a population of neural_networks with random weigths on each input of each neuron of each layers and evaluate them
+        public void createPop(List<int> nbNeuronByLayers)
         {
             pop = new List<indiv>();
             indiv ind;
-            double data;
             for (int y = 0; y < sizePop; y++) {
-                ind = new indiv();
-                for (int i = 0; i < sizeData; i++)
-                {
-                    data = rand.NextDouble();
-                    ind.addData(data);
-                }
+                ind = new indiv(nbNeuronByLayers);
                 ind.eval();
                 pop.Add(ind);
-            }
-        }
-        public void debuging()
-        {
-            for (int i = 0; i < sizePop; i++)
-            {
-                Console.WriteLine("\tpop {0} : {1}", i, pop[i].getData());
-                Console.WriteLine("\tEval Value {0} : {1}", i, pop[i].getEvalValue());
             }
         }
 

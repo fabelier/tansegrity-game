@@ -1,17 +1,22 @@
 ﻿using System;
-
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 
 namespace ConsoleApplication1
 {
-    class Program
+    class Program : MonoBehaviour
     {
-        static void Main(string[] args)
+        void Start()
         {
             geneticAlgo.gradientDescent GD;
-            GD = new geneticAlgo.gradientDescent(1000, 0, 100, 10);
+            int nb_iterations = 1000;
+            int nb_indiv_in_pop = 100;
+            List<int> nb_neurons_by_layers = new List<int>(new int[] { 5, 4, 4, 3});
+            GD = new geneticAlgo.gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers);
             GD.update();
-            Console.WriteLine("eval value obtained : {0}", GD.getBestIndiv().getEvalValue());
+            Debug.Log(string.Format("eval value obtained : {0}", GD.getBestIndiv().getEvalValue()));
         }
     }
 }

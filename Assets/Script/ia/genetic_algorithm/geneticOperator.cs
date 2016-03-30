@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace geneticAlgo
 {
@@ -9,7 +10,7 @@ namespace geneticAlgo
     {
         double crossoverProba;
         double mutationProba;
-        Random rand;
+        System.Random rand;
         
         // ====== CONSTRUCTORS ==================
 
@@ -17,56 +18,84 @@ namespace geneticAlgo
         {
             crossoverProba = 0.7;
             mutationProba = 0.01;
-            rand = new Random();
+            rand = new System.Random();
         }
 
         // ====== METHODS ==================
 
+        //given two indiv A & B, this method will choose a random layer and a random neuron position in that layer and then do a crossover
+        //by cuting A and B at this pos and mixing them together, and it will return a list containing the 2 mixed indivs
         public List<indiv> crossover(indiv A, indiv B)
         {
-            int posCrossingover = rand.Next(0, A.getSize());
-            indiv A2 = new indiv(A.getData().GetRange(0, posCrossingover).Concat(B.getData().GetRange(posCrossingover, B.getSize() - posCrossingover)).ToList());
-            indiv B2 = new indiv(B.getData().GetRange(0, posCrossingover).Concat(A.getData().GetRange(posCrossingover, A.getSize() - posCrossingover)).ToList());
+            int layer_num_Crossingover = rand.Next(0, A.getNbLayer()-1);
+            int Neuron_num_Crossingover = rand.Next(0, A.getNbNeuronAtLayer(layer_num_Crossingover)-1);
+
+            List<Nn.Neuron> layer_CrossingoverA = new List<Nn.Neuron>(A.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
+            layer_CrossingoverA.AddRange(B.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, B.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
+
+            List<Nn.Neuron> layer_CrossingoverB = new List<Nn.Neuron>(B.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
+            layer_CrossingoverB.AddRange(A.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, A.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
+
+            List<List<Nn.Neuron>> NnA2 = new List<List<Nn.Neuron>>(A.getLayersRange(0, layer_num_Crossingover));
+            NnA2.Add(layer_CrossingoverA);
+            NnA2.AddRange(B.getLayersRange(layer_num_Crossingover+1, B.getNbLayer()));
+
+            List<List<Nn.Neuron>> NnB2 = new List<List<Nn.Neuron>>(B.getLayersRange(0, layer_num_Crossingover));
+            NnB2.Add(layer_CrossingoverB);
+            NnB2.AddRange(A.getLayersRange(layer_num_Crossingover+1, A.getNbLayer()));
+
+
+
+            indiv A2 = new indiv(NnA2);
+            indiv B2 = new indiv(NnB2);
             List<indiv> newIndivs = new List<indiv>();
             newIndivs.Add(A2);
             newIndivs.Add(B2);
             return newIndivs;
         }
+
+        //this method will choose a random weigth of a random neuron of a random layer and modify it by a random number between -0.1 and 0.1
         public indiv mutate(indiv A)
         {
-            int posMutation = rand.Next(0, A.getSize());
+            int layer_num_mutation = rand.Next(0, A.getNbLayer());
+            int Neuron_num_mutation = rand.Next(0, A.getNbNeuronAtLayer(layer_num_mutation));
+            int weigth_num_mutation = rand.Next(0, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getNbWeigths());
             double mutation = (rand.NextDouble()*2-1)/10; //mutation between -0.1 and 0.1
-            indiv mutator = new indiv(A.getData());
-            mutator.setDataAtPos(posMutation, A.getData()[posMutation] + mutation);
-
+            indiv mutator = new indiv(A);
+            mutator.setDataAtPos(layer_num_mutation, Neuron_num_mutation, weigth_num_mutation, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getWeigth(weigth_num_mutation) + mutation);
             return mutator;
         }
-        public List<indiv> applyGeneticChanges(List<indiv> pop)
+
+        //given the selected indivs, it will decide on each one if it will cross it with another one, or mutate it, or do nothing. This decision is based on the probabilities
+        //set in the constructor
+        public List<indiv> applyGeneticChanges(List<indiv> pop, int totalPopSize)
         {
             List<indiv> newPop = new List<indiv>(pop);
             double geneticChangeProba;
-            for (int i = 0; i < pop.Count; i++)
+            while(newPop.Count < totalPopSize) //the new population created needs to be superior to the size of the pop
+            // because next we use simple selection to reduce the number of element of the pop
             {
-                for (int o = 0; o < pop.Count; o++)
+                for (int i = 0; i < pop.Count; i++)
                 {
-                    if (i != o)
+                    for (int o = 0; o < pop.Count; o++)
                     {
-                        geneticChangeProba = rand.NextDouble();
-                        if (geneticChangeProba < crossoverProba)
+                        if (i != o) // no need to cross one indiv with itself
                         {
-                            newPop.AddRange(crossover(pop[i], pop[o]));
+                            geneticChangeProba = rand.NextDouble();
+                            if (geneticChangeProba < crossoverProba)
+                            {
+                                newPop.AddRange(crossover(pop[i], pop[o])); // do a crossover
+                            }
                         }
                     }
-                }
-                geneticChangeProba = rand.NextDouble();
-                if (geneticChangeProba < mutationProba)
-                {
-                    newPop.Add(mutate(pop[i]));
+                    geneticChangeProba = rand.NextDouble();
+                    if (geneticChangeProba < mutationProba)
+                    {
+                        newPop.Add(mutate(pop[i])); // do a mutation
+                    }
                 }
             }
             return newPop;
         }
-
-        // ====== GET/SET ==================
     }
 }

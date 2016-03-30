@@ -11,19 +11,18 @@ namespace Nn
         public double weight;// { get; set; }
     }
 
-    public class Neuron  // enlever le MonoBehaviour
+    public class Neuron
     {
         public List<Input> inputs;
-        public double fire_val { get; private set; }  // is the neuron activated ?  default: FALSE
-        //public int in_layer { get; set; }
-        //public int in_position { } 
-
-        //private System.Random rand; // obsolete
-
-        // ===========================================================================================================
+        public double fire_val { get; private set; }  // is the neuron activated ?  default: 0
+ 
         // ======== CONSTRUCTOR ==============================
-        // ===========================================================================================================
 
+        public Neuron()
+        {
+            inputs = new List<Input>();
+            fire_val = 0;
+        }
         // this Neuron is initialited with random weights
         // and Input.input values at 0
         public Neuron(int n_weights, System.Random rand)
@@ -39,8 +38,6 @@ namespace Nn
                 inputs.Add(tmp);
             }
         }
-
-
         public Neuron(List<double> weight){
             // Input fill
             Input tmp;
@@ -52,7 +49,6 @@ namespace Nn
                 inputs.Add(tmp);
             }
         }
-        
         public Neuron(List<double> weight , List<double> input)
         {
             if(weight.Count != input.Count)
@@ -72,7 +68,6 @@ namespace Nn
             // Take the descision
             main(inputs);
         }
-
         // The most secure way to construct the Neuron class with the
         // Input list made. 
         public Neuron(List<Input> inputs)
@@ -83,11 +78,7 @@ namespace Nn
             main(inputs);
         }
 
-        
-
-        // ===========================================================================================================
         //========== Methods =======================================
-        // ===========================================================================================================
 
         // ===== GET/SET =======================================
         public void setWeight(double weights, int position) {
@@ -102,7 +93,6 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-
         public void setInput(double input, int position)
         {
             if (inputs.Count > position)
@@ -112,12 +102,10 @@ namespace Nn
             }
             else
             {
-                Debug.Log("try to set input in a too high position");
+                Debug.Log(string.Format("try to set input in position : {0}, but there is only {1} input", position, inputs.Count));
                 throw new IndexOutOfRangeException();
             }
         }
-        
-
         public void setInput(Input input, int position)
         {
             if( inputs.Count > position)
@@ -128,7 +116,6 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-
         public double getInput(int position)
         {
             if (inputs.Count > position)
@@ -139,7 +126,16 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-
+        public double getWeigth(int position)
+        {
+            if (inputs.Count > position)
+                return inputs[position].weight;
+            else
+            {
+                Debug.Log("getInput :try to get input in a too high position");
+                throw new IndexOutOfRangeException();
+            }
+        }
         // Get the complete list of inputs stored in the Input struct
         public List<double> getAllInput()
         {
@@ -150,7 +146,10 @@ namespace Nn
             }
             return tmp_input;
         }
-
+        public int getNbWeigths()
+        {
+            return inputs.Count;
+        }
 
         // ===== TO VISUALIZE ===================================
 
@@ -173,7 +172,6 @@ namespace Nn
             double val = combinaison(inputs);
             activation(val);
         }
-
         public double fire()
         {
             try
@@ -187,7 +185,6 @@ namespace Nn
                 throw new Exception("You do not have set the input, I guess");
             }
         }
-
         // Function that sum up the weigthed values returned by the input neurons 
         public double combinaison(List<Input> inputs) {
             double val = 0;
@@ -198,9 +195,7 @@ namespace Nn
 
             return val;
         }
-
-
-        // Function that descide weather the neuron fire
+        // Function that descide weather (lol ça ne se dit pas comme ça anton) the neuron fire
         // val    : must be in ]0,1]
         // lambda : in orther to control the slope of the function, the more lambda is high, the more the slope is important
         public double activation(double val, double lambda =1.0){
