@@ -12,9 +12,9 @@ public class LinkTansegrity_IA : MonoBehaviour {
     public bool isFinished;
     public double dist_arrival; // distance in between the tansegrity and the arrival
 
-    public Spring toControl1;
-    public Spring toControl2;
-    public Spring toControl3;
+    private Spring toControl1;
+    private Spring toControl2;
+    private Spring toControl3;
 
     private List<double> nn_input;
     private List<bool> nn_output;

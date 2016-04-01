@@ -63,7 +63,7 @@ namespace geneticAlgo
         public void eval()
         {
             evalValue = 0;
-            LinkTansegrity_IA tansegrityStruct = Instanciate();
+            GameObject tansegrityStruct = Instantiate(Resources.Load("Link")) as GameObject;
             tansegrityStruct.init(this);
             //tansegrity_creator tansegrityStruct = new tansegrity_creator(this); //create a tansegrity structure in the environnement which will then set the evalvalue once updates finished
         }
