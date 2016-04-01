@@ -143,6 +143,10 @@ namespace geneticAlgo
         {
             return evalValue;
         }
+        public void setEvalValue(double eval)
+        {
+            this.evalValue = eval;
+        }
         public override string ToString()
         {
             string dataString="";
