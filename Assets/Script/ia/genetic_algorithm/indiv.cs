@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Assets.Script.game;
 
 namespace geneticAlgo
 {
     class indiv
     {
         Nn.Neural_network Nn;
-        double evalValue;
+        double evalValue;//-1 represent the eval not computed
 
         // ====== CONSTRUCTORS ==================
 
@@ -17,14 +18,14 @@ namespace geneticAlgo
         public indiv()
         {
             Nn = new Nn.Neural_network();
-            evalValue = 0;
+            evalValue = -1;
         }
 
         //create an indiv with a neural network containing size_layers neurons by layers
         public indiv(List<int> size_layers)
         {
             this.Nn = new Nn.Neural_network(size_layers);
-            this.evalValue = 0;
+            this.evalValue = -1;
         }
 
         // copy an indiv
@@ -39,14 +40,14 @@ namespace geneticAlgo
         public indiv(List<List<Nn.Neuron>> Nn)
         {
             this.Nn = new Nn.Neural_network(Nn);
-            evalValue = 0;
+            evalValue = -1;
         }
 
         //create an indiv with a neural network containing the weigths specified in data
         public indiv(List<List<List<double>>> data)
         {
             this.Nn = new Nn.Neural_network(data);
-            this.evalValue = 0;
+            this.evalValue = -1;
         }
 
         //same as before but with the evalvalue already computed
@@ -58,19 +59,19 @@ namespace geneticAlgo
 
         // ====== METHODS ==================
 
-        //for final version, put the inputs of the Nn in parameter
+        //create a tansegrity structure controlled by the Nn on the environement
         public void eval()
         {
             evalValue = 0;
-            List<double> Nn_input = new List<double> { 3.5, 4, 2, 5.5, 60 };
-            List<bool> output = new List<bool>(Nn.fire(Nn_input));
-            for (int i = 0; i < output.Count; i++)
-            {
-                if (output[i])
-                {
-                    evalValue += 1;
-                }
-            }
+            LinkTansegrity_IA tansegrityStruct = Instanciate();
+            tansegrityStruct.init(this);
+            //tansegrity_creator tansegrityStruct = new tansegrity_creator(this); //create a tansegrity structure in the environnement which will then set the evalvalue once updates finished
+        }
+
+        //check if unity has finished to evaluate the indiv in the environnement
+        public bool isEvalFinished()
+        {
+            return evalValue != -1;
         }
 
         //add a double to all weigths of all neurons of all layers of the neural network

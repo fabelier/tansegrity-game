@@ -8,74 +8,113 @@ namespace geneticAlgo
 {
     class gradientDescent
     {
+        int iteration;
         List<indiv> pop;
         int sizePop;
         int nbIterationMax;
         System.Random rand;
         indiv bestIndiv;
         geneticOperator GO;
+        List<indiv> neighborhood;
+        List<indiv> selectedIndivs;
 
         // ====== CONSTRUCTORS ==================
 
         // basic constuctor not very usefull
         public gradientDescent()
         {
+            this.iteration = 0;
             this.nbIterationMax = 1000;
             this.sizePop = 10;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
             createPop(new List<int>(new int[] { 5, 4, 4,3 }));
             this.bestIndiv = pop[0];
+            neighborhood = new List<indiv>();
         }
 
         // construct a gradientDescent which will evolve sizePop neural networks for nbIterationMax iterations
         // the 1st element of nbNeuronByLayers is the nbr of neurons on the input layer, and the last element is the number of outputs of the last layer
         public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers)
         {
+            this.iteration = 0;
             this.nbIterationMax = nbIterationMax;
             this.sizePop = sizePop;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
             this.bestIndiv = pop[0];
+            neighborhood = new List<indiv>();
         }
 
         // ====== METHODS ==================
 
-        //main loop : select by tournament some of the best indivs of the pop, then apply genetic operation on them to create other indivs
-        //then select sizePop nbr of indiv in this new pop, and go to the next iteration
-        public void update()
+        //main loop will use generateNeighbors, runEvals, and then changePop on each iteration :
+        //generateNeighbors : select by tournament some of the best indivs of the pop, then apply genetic operation on them to create other indivs
+        //runEvals : run the eval on the new pop    
+        //changePop : select sizePop nbr of indiv in this new pop, and go to the next iteration
+
+        public void generateNeighbors()
         {
-            List<indiv> neighborhood;
-            List<indiv> selectedIndivs;
-            for (int i = 0; i < nbIterationMax; i++)
+            if (iteration < nbIterationMax)
             {
-                neighborhood = new List<indiv>();
-                neighborhood.AddRange(pop);
+                neighborhood = new List<indiv>(pop);
 
                 // selection by tournament
                 selectedIndivs = tournamentSelection(neighborhood, neighborhood.Count / 2);
 
                 //apply changes on the selected pop to create new indivs
                 neighborhood = GO.applyGeneticChanges(selectedIndivs, sizePop);
+            }
+        }
 
+        public void runEvals()
+        {
+            if (iteration < nbIterationMax)
+            {
+                //begin the evals of the new pop
+                for (int ind = 0; ind < neighborhood.Count; ind++)
+                {
+                    neighborhood[ind].eval();
+                }
+            }
+        }
+
+        public void changePop()
+        {
+            if (iteration < nbIterationMax)
+            {
                 //eval the new pop
                 for (int ind = 0; ind < neighborhood.Count; ind++)
                 {
                     neighborhood[ind].eval();
                 }
-
                 // select the sizePop best indivs from the newly generated pop to have the same size as pop for the next iteration
                 pop = simpleSelection(neighborhood);
 
                 bestIndiv = pop[0];
 
                 //print the best indiv every 10% of the nbIterationMax
-                if (i % (nbIterationMax / 10) == 0)
+                if (iteration % (nbIterationMax / 10) == 0)
                 {
-                    Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", i, bestIndiv));
+                    Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv));
+                }
+                iteration += 1;
+            }
+        }
+
+        // check if unity has finished to evaluate the new pop in the environnement
+        public bool areEvalsFinished()
+        {
+            bool check = true;
+            for (int i = 0; i < neighborhood.Count; i++)
+            {
+                if (neighborhood[i].isEvalFinished() == false)
+                {
+                    check = false;
                 }
             }
+            return check;
         }
 
         // return a pop resized with sizePop indivs with the best evalValues
