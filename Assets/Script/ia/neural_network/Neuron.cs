@@ -14,6 +14,7 @@ namespace Nn
     public class Neuron
     {
         public List<Input> inputs;
+        //public double biais;
         public double fire_val { get; private set; }  // is the neuron activated ?  default: 0
  
         // ======== CONSTRUCTOR ==============================
@@ -21,6 +22,7 @@ namespace Nn
         public Neuron()
         {
             inputs = new List<Input>();
+            //biais = 0;
             fire_val = 0;
         }
         // this Neuron is initialited with random weights
@@ -30,7 +32,7 @@ namespace Nn
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            //rand = new System.Random();  //obsolete
+            //biais = rand.NextDouble();
             for (int i = 0; i < n_weights; i++)
             {
                 tmp = new Input();
@@ -38,9 +40,12 @@ namespace Nn
                 inputs.Add(tmp);
             }
         }
-        public Neuron(List<double> weight){
+        //public Neuron(List<double> weight, double biais)
+        public Neuron(List<double> weight)
+        {
             // Input fill
             Input tmp;
+            //this.biais = biais;
             this.inputs = new List<Input>();
             for (int i = 0; i < weight.Count; i++)
             {
@@ -49,13 +54,16 @@ namespace Nn
                 inputs.Add(tmp);
             }
         }
-        public Neuron(List<double> weight , List<double> input)
+
+        //public Neuron(List<double> weight , List<double> input, double biais)
+        public Neuron(List<double> weight, List<double> input)
         {
             if(weight.Count != input.Count)
             {
                 Debug.Log("The weight and the input list have different size ! What did you expect ?");
                 throw new IndexOutOfRangeException();
             }
+            //this.biais = biais;
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
@@ -70,8 +78,10 @@ namespace Nn
         }
         // The most secure way to construct the Neuron class with the
         // Input list made. 
+        //public Neuron(List<Input> inputs, double biais)
         public Neuron(List<Input> inputs)
         {
+            //this.biais = biais;
             // Input fill
             this.inputs = new List<Input>(inputs);
             // Take the descision
@@ -116,6 +126,11 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
+        //public void setBiais(double biais)
+        //{
+        //    this.biais = biais;
+        //}
+
         public double getInput(int position)
         {
             if (inputs.Count > position)
@@ -136,6 +151,10 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
+       // public double getBiais()
+        //{
+        //    return biais;
+        //}
         // Get the complete list of inputs stored in the Input struct
         public List<double> getAllInput()
         {
@@ -156,6 +175,7 @@ namespace Nn
         public string toString(bool debug)
         {
             string str = "";
+            //string str = string.Format("\t Biais : {0}\n",biais);
             //str = string.Format("Neuron have : \n");
             for (int i = 0; i < inputs.Count; i++)
             {
@@ -180,11 +200,12 @@ namespace Nn
             }
             catch
             {
-                Debug.Log("You have not set the Inputs of the neron correctly");
+                Debug.Log("You have not set the Inputs or the biais of the neuron correctly");
                 //throw new TypeInitializationException('Neuron',ArgumentNullException de); // J'arrive pas a gérer l'exeption
                 throw new Exception("You do not have set the input, I guess");
             }
         }
+
         // Function that sum up the weigthed values returned by the input neurons 
         public double combinaison(List<Input> inputs) {
             double val = 0;
@@ -192,10 +213,12 @@ namespace Nn
             for (int i = 0; i < inputs.Count; i++){
                 val = val + inputs[i].weight * inputs[i].input;
             }
+            //val += biais;
 
             return val;
         }
-        // Function that descide weather (lol ça ne se dit pas comme ça anton) the neuron fire
+
+        // Function that descide if the neuron fire
         // val    : must be in ]0,1]
         // lambda : in orther to control the slope of the function, the more lambda is high, the more the slope is important
         public double activation(double val, double lambda =1.0){

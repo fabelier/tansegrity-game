@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace geneticAlgo
 {
-    class gradientDescent
+    public class gradientDescent
     {
         int iteration;
         List<indiv> pop;

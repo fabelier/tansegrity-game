@@ -6,23 +6,32 @@ using geneticAlgo;
 // Récupére les stat
 
 public class LinkTansegrity_IA : MonoBehaviour {
-    indiv neuroNet;
-    GameObject tansegrity;
+    public indiv neuroNet;
+    public GameObject tansegrity;
 
     public bool isFinished;
     public double dist_arrival; // distance in between the tansegrity and the arrival
 
+    // Spring
     private Spring toControl1;
     private Spring toControl2;
     private Spring toControl3;
 
+    // Sticks
+    private Stick[] sticks;
+    private List<Vector3> posStick;
+    
+
+    // for the IA
     private List<double> nn_input;
     private List<bool> nn_output;
-    private Vector3 arrival;
-    private Vector3 posA, posB, posC, posD, posE, posF, posTans;
-    //private double xA,xB,xC,xD,xE,xF ,yA,yB,yC,yD,yE,yF ,zA,zB,zC,zD,zE,zF;
     private List<double> toFire;
     private List<bool> output;
+
+    // code realated
+    private bool isInit;
+    private Vector3 arrival;
+    private Vector3 posTans;
     private int increment;
     
 
@@ -31,16 +40,25 @@ public class LinkTansegrity_IA : MonoBehaviour {
     // Use this for a play with a trained Neural network
     void Start () {
         isFinished = false;
+        isInit = false;
         //neuroNet = new indiv(saved_neuroNet); // use a saved and train Neural network
-        tansegrity = Instantiate(Resources.Load("Tansegrity")) as GameObject;
+        Object loadedObject = Resources.Load("Tansegrity");
+        //Debug.LogWarning("loaded object: " + loadedObject);
+        tansegrity = Instantiate(loadedObject) as GameObject;
+        
         arrival = GameObject.Find("Arrival").transform.position;
         toControl1 = tansegrity.GetComponentInChildren<Spring>();
         toControl2 = tansegrity.GetComponentInChildren<Spring>();
         toControl3 = tansegrity.GetComponentInChildren<Spring>();
+        increment = 0;
 
+        // Gestion des stick
+        sticks = tansegrity.GetComponentsInChildren<Stick>();
+        Debug.Log(sticks.Length);
+       
     }
 
-    void Init(indiv saved_neuroNet)
+    public void Init(indiv saved_neuroNet)
     {
         neuroNet = new indiv(saved_neuroNet);
 
@@ -50,6 +68,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
             Debug.Log("Initialized with a Neural network with wrong first layer size");
             throw new System.Exception();
         }
+        isInit = true;
 
     }
     // FAIRE un init avec limite de temps ??
@@ -58,56 +77,69 @@ public class LinkTansegrity_IA : MonoBehaviour {
 	void Update () {
         Vector3 slave;
 
-        // ============== Turn Initialisation ==================================
-        increment += 1; // Count the number of turn
-        toFire.Clear(); // empty the input list
-        
-            
-        // Get Environment statistics 
+        if (isInit)
+        {
+
+            // ============== Turn Initialisation ==================================
+            List<double> toFire = new List<double>();
+            increment += 1; // Count the number of turn
+
+
+
+
+            // Get Environment statistics 
             // each stick end coordinates
-        
-        posA = tansegrity.GetComponentInChildren<Transform>().Find("a").position; 
-        posB = tansegrity.GetComponentInChildren<Transform>().Find("b").position;
-        posC = tansegrity.GetComponentInChildren<Transform>().Find("c").position;
-        posD = tansegrity.GetComponentInChildren<Transform>().Find("d").position;
-        posE = tansegrity.GetComponentInChildren<Transform>().Find("e").position;
-        posF = tansegrity.GetComponentInChildren<Transform>().Find("f").position;
-        toFire.Add((double) posA.x) ; toFire.Add((double) posA.y) ; toFire.Add((double) posA.z) ;
-        toFire.Add((double) posB.x) ; toFire.Add((double) posB.y) ; toFire.Add((double) posB.z) ;
-        toFire.Add((double) posC.x) ; toFire.Add((double) posC.y) ; toFire.Add((double) posC.z) ;
-        toFire.Add((double) posD.x) ; toFire.Add((double) posD.y) ; toFire.Add((double) posD.z) ;
-        toFire.Add((double) posE.x) ; toFire.Add((double) posE.y) ; toFire.Add((double) posE.z) ;
-        toFire.Add((double) posF.x) ; toFire.Add((double) posF.y) ; toFire.Add((double) posF.z) ;
-        
-        // Get distances of the tansegrity from the finish
-        posTans = (posA + posB + posC + posD + posE + posF)/7;
-        slave =  posTans - arrival;
-        dist_arrival = (double) slave.magnitude;
-        toFire.Add(dist_arrival);
 
-        // =========  fire  =====================================================
-        output = neuroNet.getNn().fire(toFire);
+            posStick = new List<Vector3>();
+            posTans = new Vector3(0, 0, 0);
+            for (int i = 0; i < sticks.Length; i++) // compute all stats related to the sticks
+            {
+                slave = sticks[i].ObjectA.transform.position; //  stick first end
+                posStick.Add(slave);
+                posTans += slave;                             //at the end compute the barycenter of the tansegrity
+                toFire.Add((double)slave.x);
+                toFire.Add((double)slave.y);
+                toFire.Add((double)slave.z);
 
-        // ==== APPLY output in the simulation ==================================
-        if (output[0] == true)
-        {
-            upRaideur(toControl1);
-        }
-        if (output[1] == true)
-        {
-            upRaideur(toControl2);
-        }
-        if (output[2] == true)
-        {
-            upRaideur(toControl3);
-        }
+                slave = sticks[i].ObjectB.transform.position; //  stick second end
+                posStick.Add(slave);
+                posTans += slave;                             //at the end compute the barycenter of the tansegrity
+                toFire.Add((double)slave.x);
+                toFire.Add((double)slave.y);
+                toFire.Add((double)slave.z);
+            }
 
-        // ====  STOP ==========================================================
-        if(increment >= 10000)
-        {
-            neuroNet.setEvalValue(dist_arrival);
-            Destroy(tansegrity);
-            Destroy(this);
+
+            // Get distances of the tansegrity from the finish
+            posTans = posTans / (sticks.Length * 2);
+            slave = posTans - arrival;
+            dist_arrival = (double)slave.magnitude;
+            toFire.Add(dist_arrival);
+
+            // =========  fire  =====================================================
+            output = neuroNet.getNn().fire(toFire);
+
+            // ==== APPLY output in the simulation ==================================
+            if (output[0] == true)
+            {
+                upRaideur(toControl1);
+            }
+            if (output[1] == true)
+            {
+                upRaideur(toControl2);
+            }
+            if (output[2] == true)
+            {
+                upRaideur(toControl3);
+            }
+
+            // ====  STOP ==========================================================
+            if (increment >= 10000)
+            {
+                neuroNet.setEvalValue(dist_arrival);
+                Destroy(tansegrity);
+                Destroy(this);
+            }
         }
     }
 

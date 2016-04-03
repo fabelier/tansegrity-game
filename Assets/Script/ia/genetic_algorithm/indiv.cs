@@ -7,7 +7,7 @@ using Assets.Script.game;
 
 namespace geneticAlgo
 {
-    class indiv
+    public class indiv
     {
         Nn.Neural_network Nn;
         double evalValue;//-1 represent the eval not computed
@@ -63,9 +63,10 @@ namespace geneticAlgo
         public void eval()
         {
             evalValue = 0;
-            GameObject tansegrityStruct = Instantiate(Resources.Load("Link")) as GameObject;
-            tansegrityStruct.init(this);
-            //tansegrity_creator tansegrityStruct = new tansegrity_creator(this); //create a tansegrity structure in the environnement which will then set the evalvalue once updates finished
+            Debug.Log("Je suis là");
+            GameObject link = UnityEngine.Object.Instantiate(Resources.Load("Link")) as GameObject;
+            link.GetComponent<LinkTansegrity_IA>().Init(this);
+           
         }
 
         //check if unity has finished to evaluate the indiv in the environnement

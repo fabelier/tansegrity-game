@@ -20,6 +20,7 @@ namespace Nn {
         // Make a neural network with all input at zero and random weights
         public Neural_network( List<int> n_neuronIlayer)
         {
+            Debug.Log("Je suis la");
             Neuron tmp;
             List<Neuron> tmp_layer;
             network = new List<List<Neuron>>();
@@ -32,8 +33,9 @@ namespace Nn {
                 {
                     if (i == 0)  // special treatment for first layer, that take input of the network
                     {                                                // for this case the weight is    
-                        List<double> n = new List<double>(); n.Add(1); // a List of one element valued at 1 
-                        tmp = new Neuron(n);
+                        List<double> n = new List<double>(); n.Add(1); // a List of one element valued at 1
+                        tmp = new Neuron(n); 
+                        //tmp = new Neuron(n,0);    // and the biais is set to 0
                     }
                     else
                     {
