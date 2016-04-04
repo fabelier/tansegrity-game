@@ -8,16 +8,27 @@ namespace geneticAlgo
 {
     class geneticOperator
     {
-        double crossoverProba;
-        double mutationProba;
+        double crossoverPercent;
+        double mutationPercent;
+        double randomlyGeneratedPercent;
         System.Random rand;
         
         // ====== CONSTRUCTORS ==================
 
         public geneticOperator()
         {
-            crossoverProba = 0.7;
-            mutationProba = 0.01;
+            crossoverPercent = 0.7;
+            mutationPercent = 0.1;
+            randomlyGeneratedPercent = 0.2;
+            rand = new System.Random();
+        }
+
+        //crossoverPercent + mutationPercent + randomlyGeneratedPercent must be = 1 (so crossoverPercent + mutationPercent <1 ! )
+        public geneticOperator(double crossoverPercent, double mutationPercent)
+        {
+            this.crossoverPercent = crossoverPercent;
+            this.mutationPercent = mutationPercent;
+            this.randomlyGeneratedPercent = 1 - (crossoverPercent + mutationPercent);
             rand = new System.Random();
         }
 
@@ -61,7 +72,7 @@ namespace geneticAlgo
             int Neuron_num_mutation = rand.Next(0, A.getNbNeuronAtLayer(layer_num_mutation));
             int weigth_num_mutation = rand.Next(0, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getNbWeigths());
             double mutation = (rand.NextDouble()*2-1)/10; //mutation between -0.1 and 0.1
-            indiv mutator = new indiv(A);
+            indiv mutator = new indiv(A, -1);
             mutator.setDataAtPos(layer_num_mutation, Neuron_num_mutation, weigth_num_mutation, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getWeigth(weigth_num_mutation) + mutation);
             return mutator;
         }
@@ -82,17 +93,48 @@ namespace geneticAlgo
                         if (i != o) // no need to cross one indiv with itself
                         {
                             geneticChangeProba = rand.NextDouble();
-                            if (geneticChangeProba < crossoverProba)
+                            if (geneticChangeProba < crossoverPercent)
                             {
                                 newPop.AddRange(crossover(pop[i], pop[o])); // do a crossover
                             }
                         }
                     }
                     geneticChangeProba = rand.NextDouble();
-                    if (geneticChangeProba < mutationProba)
+                    if (geneticChangeProba < mutationPercent)
                     {
                         newPop.Add(mutate(pop[i])); // do a mutation
                     }
+                }
+            }
+            return newPop;
+        }
+
+        public List<indiv> applyGeneticChangesPercent(List<indiv> pop, int totalPopSize)
+        {
+            List<indiv> newPop = new List<indiv>(pop);
+            double geneticChangeProba;
+            int nbrMutations = (int)Math.Floor(mutationPercent * pop.Count);
+            int nbrCrossover = (int)Math.Floor(crossoverPercent * pop.Count);
+            List<indiv> popForCrossover = new List<indiv>();
+            for (int i = 0; i < pop.Count; i++)
+            {
+                double selectCrossover = nbrCrossover / (pop.Count - i);
+                double selectMutation = nbrMutations / (pop.Count - i);
+                double r = rand.NextDouble();
+                if (r < selectCrossover)
+                {
+                    popForCrossover.Add(pop[i]);
+                }
+                if (r < selectMutation)
+                {
+                    newPop.Add(mutate(pop[i]));
+                }
+            }
+            for(int i = 0; i < popForCrossover.Count; i++)
+            {
+                for(int j=0;j < popForCrossover.Count; j++)
+                {
+                    newPop.AddRange(crossover(popForCrossover[i], popForCrossover[j]));
                 }
             }
             return newPop;

@@ -12,10 +12,11 @@ public class LinkTansegrity_IA : MonoBehaviour {
     public bool isFinished;
     public double dist_arrival; // distance in between the tansegrity and the arrival
 
-    // Spring
-    private Spring toControl1;
-    private Spring toControl2;
-    private Spring toControl3;
+    //// Spring
+    //private Spring toControl1;
+    //private Spring toControl2;
+    //private Spring toControl3;
+    private SpringManager springManager;
 
     // Sticks
     private Stick[] sticks;
@@ -40,16 +41,18 @@ public class LinkTansegrity_IA : MonoBehaviour {
     // Use this for a play with a trained Neural network
     void Start () {
         isFinished = false;
-        isInit = false;
+        isInit = true;
         //neuroNet = new indiv(saved_neuroNet); // use a saved and train Neural network
         Object loadedObject = Resources.Load("Tansegrity");
         //Debug.LogWarning("loaded object: " + loadedObject);
         tansegrity = Instantiate(loadedObject) as GameObject;
+        springManager = tansegrity.GetComponent<SpringManager>() as SpringManager;
+
         
         arrival = GameObject.Find("Arrival").transform.position;
-        toControl1 = tansegrity.GetComponentInChildren<Spring>();
-        toControl2 = tansegrity.GetComponentInChildren<Spring>();
-        toControl3 = tansegrity.GetComponentInChildren<Spring>();
+        //toControl1 = tansegrity.GetComponentInChildren<Spring>();
+        //toControl2 = tansegrity.GetComponentInChildren<Spring>();
+        //toControl3 = tansegrity.GetComponentInChildren<Spring>();
         increment = 0;
 
         // Gestion des stick
@@ -59,7 +62,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     public void Init(indiv saved_neuroNet)
     {
-        neuroNet = new indiv(saved_neuroNet);
+        neuroNet = saved_neuroNet;
         Debug.LogWarning(neuroNet.ToString());
         //Error gestion
         if(saved_neuroNet.getNbNeuronAtLayer(0) != 19)
@@ -68,17 +71,15 @@ public class LinkTansegrity_IA : MonoBehaviour {
             throw new System.Exception();
         }
         isInit = true;
-
     }
     // FAIRE un init avec limite de temps ??
 	
 	// Update is called once per frame
 	void Update () {
         Vector3 slave;
-
         if (isInit)
         {
-
+            Debug.Log("increment : " + increment);
             // ============== Turn Initialisation ==================================
             List<double> toFire = new List<double>();
             increment += 1; // Count the number of turn
@@ -121,32 +122,25 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // ==== APPLY output in the simulation ==================================
             if (output[0] == true)
             {
-                upRaideur(toControl1);
+                springManager.setToControl(0);
             }
             if (output[1] == true)
             {
-                upRaideur(toControl2);
+                springManager.setToControl(1);
             }
             if (output[2] == true)
             {
-                upRaideur(toControl3);
+                springManager.setToControl(2);
             }
 
             // ====  STOP ==========================================================
-            if (increment >= 10000)
+            if (increment >= 1000)
             {
+                Debug.Log("endEval : "+dist_arrival);
                 neuroNet.setEvalValue(dist_arrival);
                 Destroy(tansegrity);
                 Destroy(this);
             }
-        }
-    }
-
-    public void upRaideur(Spring toControl)
-    {
-        if (toControl.GetComponent<Spring>().raideur < 2000)
-        {
-            toControl.GetComponent<Spring>().raideur += toControl.GetComponent<Spring>().raideur * 0.1f;
         }
     }
 }

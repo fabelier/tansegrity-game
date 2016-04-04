@@ -32,8 +32,14 @@ namespace geneticAlgo
         public indiv(indiv I)
         {
             this.Nn = new Nn.Neural_network(I.getNn());
-            //this.data = new List<double>(I.getData());
             evalValue = I.getEvalValue();
+        }
+
+        //copy an indiv but not its evalValue
+        public indiv(indiv I, double eval)
+        {
+            this.Nn = new Nn.Neural_network(I.getNn());
+            evalValue = eval;
         }
 
         //create an indiv with a specified neural network Nn
@@ -62,8 +68,6 @@ namespace geneticAlgo
         //create a tansegrity structure controlled by the Nn on the environement
         public void eval()
         {
-            evalValue = 0;
-
             GameObject link = UnityEngine.Object.Instantiate(Resources.Load("Link")) as GameObject;
             link.GetComponent<LinkTansegrity_IA>().Init(this);
            
@@ -103,6 +107,7 @@ namespace geneticAlgo
         {
             this.Nn = Nn;
         }
+
         public Nn.Neural_network getNn()
         {
             return Nn;
@@ -136,18 +141,22 @@ namespace geneticAlgo
         {
             return Nn.getNbLayer();
         }
+
         public int getNbNeuronAtLayer(int layer_num)
         {
             return Nn.getNbNeuronAtLayer(layer_num);
         }
+
         public double getEvalValue()
         {
             return evalValue;
         }
+
         public void setEvalValue(double eval)
         {
             this.evalValue = eval;
         }
+
         public override string ToString()
         {
             string dataString="";

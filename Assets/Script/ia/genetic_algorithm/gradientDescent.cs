@@ -15,7 +15,6 @@ namespace geneticAlgo
         System.Random rand;
         indiv bestIndiv;
         geneticOperator GO;
-        List<indiv> neighborhood;
         List<indiv> selectedIndivs;
 
         // ====== CONSTRUCTORS ==================
@@ -30,7 +29,6 @@ namespace geneticAlgo
             this.rand = new System.Random();
             createPop(new List<int>(new int[] { 5, 4, 4,3 }));
             this.bestIndiv = pop[0];
-            neighborhood = new List<indiv>();
         }
 
         // construct a gradientDescent which will evolve sizePop neural networks for nbIterationMax iterations
@@ -44,7 +42,6 @@ namespace geneticAlgo
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
             this.bestIndiv = pop[0];
-            neighborhood = new List<indiv>();
         }
 
         // ====== METHODS ==================
@@ -58,13 +55,10 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
-                neighborhood = new List<indiv>(pop);
-                Debug.Log("size pop" + pop.Count);
                 // selection by tournament
-                selectedIndivs = tournamentSelection(neighborhood, neighborhood.Count / 2);
-                Debug.Log("sel ind " + selectedIndivs.Count);
+                selectedIndivs = tournamentSelection(pop, pop.Count / 2);
                 //apply changes on the selected pop to create new indivs
-                neighborhood = GO.applyGeneticChanges(selectedIndivs, sizePop);
+                pop = GO.applyGeneticChanges(selectedIndivs, sizePop);
             }
         }
 
@@ -73,9 +67,12 @@ namespace geneticAlgo
             if (iteration < nbIterationMax)
             {
                 //begin the evals of the new pop
-                for (int ind = 0; ind < neighborhood.Count; ind++)
+                for (int ind = 0; ind < pop.Count; ind++)
                 {
-                    neighborhood[ind].eval();
+                    if (pop[ind].getEvalValue() == -1)
+                    {
+                        pop[ind].eval();
+                    }
                 }
             }
         }
@@ -84,13 +81,8 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
-                //eval the new pop
-                for (int ind = 0; ind < neighborhood.Count; ind++)
-                {
-                    neighborhood[ind].eval();
-                }
                 // select the sizePop best indivs from the newly generated pop to have the same size as pop for the next iteration
-                pop = simpleSelection(neighborhood);
+                pop = simpleSelection(pop);
 
                 bestIndiv = pop[0];
 
@@ -107,11 +99,9 @@ namespace geneticAlgo
         public bool areEvalsFinished()
         {
             bool check = true;
-            Debug.Log("count" + neighborhood.Count);
-            for (int i = 0; i < neighborhood.Count; i++)
+            for (int i = 0; i < pop.Count; i++)
             {
-                Debug.Log("Evak GD "+neighborhood[i].getEvalValue());
-                if (neighborhood[i].isEvalFinished() == false)
+                if (pop[i].isEvalFinished() == false)
                 {
                     check = false;
                 }
@@ -194,14 +184,11 @@ namespace geneticAlgo
         public void createPop(List<int> nbNeuronByLayers)
         {
             pop = new List<indiv>();
-            neighborhood = new List<indiv>();
             indiv ind;
             for (int y = 0; y < sizePop; y++) {
                 ind = new indiv(nbNeuronByLayers);
-                Debug.LogWarning("GD " + ind.ToString());
                 ind.eval();
                 pop.Add(ind);
-                neighborhood.Add(ind);
             }
         }
 
