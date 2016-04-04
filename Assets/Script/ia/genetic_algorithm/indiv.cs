@@ -63,7 +63,7 @@ namespace geneticAlgo
         public void eval()
         {
             evalValue = 0;
-            Debug.Log("Je suis là");
+
             GameObject link = UnityEngine.Object.Instantiate(Resources.Load("Link")) as GameObject;
             link.GetComponent<LinkTansegrity_IA>().Init(this);
            

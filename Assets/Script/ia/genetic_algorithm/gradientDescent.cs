@@ -59,10 +59,10 @@ namespace geneticAlgo
             if (iteration < nbIterationMax)
             {
                 neighborhood = new List<indiv>(pop);
-
+                Debug.Log("size pop" + pop.Count);
                 // selection by tournament
                 selectedIndivs = tournamentSelection(neighborhood, neighborhood.Count / 2);
-
+                Debug.Log("sel ind " + selectedIndivs.Count);
                 //apply changes on the selected pop to create new indivs
                 neighborhood = GO.applyGeneticChanges(selectedIndivs, sizePop);
             }
@@ -107,8 +107,10 @@ namespace geneticAlgo
         public bool areEvalsFinished()
         {
             bool check = true;
+            Debug.Log("count" + neighborhood.Count);
             for (int i = 0; i < neighborhood.Count; i++)
             {
+                Debug.Log("Evak GD "+neighborhood[i].getEvalValue());
                 if (neighborhood[i].isEvalFinished() == false)
                 {
                     check = false;
@@ -192,11 +194,14 @@ namespace geneticAlgo
         public void createPop(List<int> nbNeuronByLayers)
         {
             pop = new List<indiv>();
+            neighborhood = new List<indiv>();
             indiv ind;
             for (int y = 0; y < sizePop; y++) {
                 ind = new indiv(nbNeuronByLayers);
+                Debug.LogWarning("GD " + ind.ToString());
                 ind.eval();
                 pop.Add(ind);
+                neighborhood.Add(ind);
             }
         }
 

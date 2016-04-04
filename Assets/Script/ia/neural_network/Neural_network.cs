@@ -20,7 +20,6 @@ namespace Nn {
         // Make a neural network with all input at zero and random weights
         public Neural_network( List<int> n_neuronIlayer)
         {
-            Debug.Log("Je suis la");
             Neuron tmp;
             List<Neuron> tmp_layer;
             network = new List<List<Neuron>>();

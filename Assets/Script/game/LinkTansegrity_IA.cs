@@ -54,14 +54,13 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
         // Gestion des stick
         sticks = tansegrity.GetComponentsInChildren<Stick>();
-        Debug.Log(sticks.Length);
        
     }
 
     public void Init(indiv saved_neuroNet)
     {
         neuroNet = new indiv(saved_neuroNet);
-
+        Debug.LogWarning(neuroNet.ToString());
         //Error gestion
         if(saved_neuroNet.getNbNeuronAtLayer(0) != 19)
         {
