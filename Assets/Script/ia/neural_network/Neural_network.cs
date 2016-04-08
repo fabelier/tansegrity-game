@@ -33,7 +33,7 @@ namespace Nn {
                     if (i == 0)  // special treatment for first layer, that take input of the network
                     {                                                // for this case the weight is    
                         List<double> n = new List<double>(); n.Add(1); // a List of one element valued at 1
-                        tmp = new Neuron(n); 
+                        tmp = new Neuron(n, rand); 
                         //tmp = new Neuron(n,0);    // and the biais is set to 0
                     }
                     else
@@ -54,13 +54,14 @@ namespace Nn {
             List<Neuron> tmp_layer;
             List<double> tmp_weight;
             network = new List<List<Neuron>>();
+            rand = new System.Random();
             for (int i = 0; i < network_weight.Count; i++)
             {
                 tmp_layer = new List<Neuron>();
                 for (int j = 0; j < network_weight[i].Count; j++)
                 {
                     tmp_weight = new List<double>(network_weight[i][j]);
-                    tmp = new Neuron(tmp_weight);
+                    tmp = new Neuron(tmp_weight, rand);
                     tmp_layer.Add(tmp);
                 }
                 this.network.Add(tmp_layer);

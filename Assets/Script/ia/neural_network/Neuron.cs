@@ -13,16 +13,15 @@ namespace Nn
 
     public class Neuron
     {
-        public List<Input> inputs;
-        //public double biais;
-        public double fire_val { get; private set; }  // is the neuron activated ?  default: 0
+       public List<Input> inputs; //the first Input has an input value of 1 because it is the bias of the neuron
+       public double fire_val { get; private set; }  // is the neuron activated ?  default: 0
  
         // ======== CONSTRUCTOR ==============================
 
         public Neuron()
         {
             inputs = new List<Input>();
-            //biais = 0;
+            inputs[0] = new Input { input = 1, weight = 1 };//set bias to 1
             fire_val = 0;
         }
         // this Neuron is initialited with random weights
@@ -32,7 +31,7 @@ namespace Nn
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            //biais = rand.NextDouble();
+            inputs.Add(new Input { input = 1, weight = rand.NextDouble()*2-1 });//set bias between -1 & 1
             for (int i = 0; i < n_weights; i++)
             {
                 tmp = new Input();
@@ -41,12 +40,12 @@ namespace Nn
             }
         }
         //public Neuron(List<double> weight, double biais)
-        public Neuron(List<double> weight)
+        public Neuron(List<double> weight, System.Random rand)
         {
             // Input fill
             Input tmp;
-            //this.biais = biais;
             this.inputs = new List<Input>();
+            inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
             for (int i = 0; i < weight.Count; i++)
             {
                 tmp = new Input();
@@ -56,7 +55,7 @@ namespace Nn
         }
 
         //public Neuron(List<double> weight , List<double> input, double biais)
-        public Neuron(List<double> weight, List<double> input)
+        public Neuron(List<double> weight, List<double> input, System.Random rand)
         {
             if(weight.Count != input.Count)
             {
@@ -67,6 +66,7 @@ namespace Nn
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
+            inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
             for (int i = 0; i < weight.Count; i++)
             {
                 tmp = new Input();
@@ -79,10 +79,11 @@ namespace Nn
         // The most secure way to construct the Neuron class with the
         // Input list made. 
         //public Neuron(List<Input> inputs, double biais)
-        public Neuron(List<Input> inputs)
+        public Neuron(List<Input> inputs, System.Random rand)
         {
             //this.biais = biais;
             // Input fill
+            inputs.Insert(0, new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });
             this.inputs = new List<Input>(inputs);
             // Take the descision
             main(inputs);
@@ -91,7 +92,8 @@ namespace Nn
         //========== Methods =======================================
 
         // ===== GET/SET =======================================
-        public void setWeight(double weights, int position) {
+        public void setWeight(double weights, int position)
+        {
             if (inputs.Count > position)
             {
                 double save_input = this.inputs[position].input;
@@ -126,10 +128,10 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-        //public void setBiais(double biais)
-        //{
-        //    this.biais = biais;
-        //}
+        public void setBiais(double bias)
+        {
+            this.inputs[0] = new Input { input = 1, weight = bias };
+        }
 
         public double getInput(int position)
         {
@@ -151,10 +153,10 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-       // public double getBiais()
-        //{
-        //    return biais;
-        //}
+        public double getBias()
+        {
+            return inputs[0].input;
+        }
         // Get the complete list of inputs stored in the Input struct
         public List<double> getAllInput()
         {
@@ -210,7 +212,7 @@ namespace Nn
         public double combinaison(List<Input> inputs) {
             double val = 0;
 
-            for (int i = 0; i < inputs.Count; i++){
+            for (int i = 0; i < inputs.Count; i++){//the first one is the bias with an input of 1
                 val = val + inputs[i].weight * inputs[i].input;
             }
             //val += biais;

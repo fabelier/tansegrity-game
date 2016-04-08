@@ -121,7 +121,6 @@ namespace geneticAlgo
             List<indiv> newPop = new List<indiv>(pop);
             int nbrMutations = (int)Math.Floor(mutationPercent * pop.Count);
             int nbrCrossover = (int)Math.Floor(crossoverPercent * pop.Count);
-            Debug.Log("nbr to mutate : " + nbrMutations);
             List<indiv> shuffle = new List<indiv>(pop.OrderBy(item => rand.Next()));
             for(int i = 0; i < shuffle.Count; i++)
             {
