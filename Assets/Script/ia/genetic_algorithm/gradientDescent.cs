@@ -44,6 +44,18 @@ namespace geneticAlgo
             this.bestIndiv = pop[0];
         }
 
+        //same but with a set percentage of the pop which will be mutated and crossovered
+        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, double mutantPercent, double crossoveredPercent)
+        {
+            this.iteration = 0;
+            this.nbIterationMax = nbIterationMax;
+            this.sizePop = sizePop;
+            this.GO = new geneticOperator(mutantPercent, crossoveredPercent);
+            this.rand = new System.Random();
+            createPop(nbNeuronByLayers);
+            this.bestIndiv = pop[0];
+        }
+
         // ====== METHODS ==================
 
         //main loop will use generateNeighbors, runEvals, and then changePop on each iteration :
@@ -55,10 +67,12 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
+
                 // selection by tournament
-                selectedIndivs = tournamentSelection(pop, pop.Count / 2);
+                //selectedIndivs = tournamentSelection(pop, pop.Count / 2);
                 //apply changes on the selected pop to create new indivs
-                pop = GO.applyGeneticChanges(selectedIndivs, sizePop);
+                //pop = GO.applyGeneticChanges(selectedIndivs, sizePop);
+                pop = GO.applyGeneticChangesPercent(pop);
             }
         }
 

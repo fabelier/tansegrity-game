@@ -77,7 +77,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
         Vector3 slave;
         if (isInit)
         {
-            Debug.Log("increment : " + increment);
             // ============== Turn Initialisation ==================================
             List<double> toFire = new List<double>();
             increment += 1; // Count the number of turn
@@ -138,7 +137,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
             if (increment >= max_increment || dist_arrival <1)
             {
                 calcEval(dist_arrival, increment);
-                Debug.Log("endEval : "+dist_arrival);
                 neuroNet.setEvalValue(dist_arrival);
                 Destroy(tansegrity);
                 Destroy(this);

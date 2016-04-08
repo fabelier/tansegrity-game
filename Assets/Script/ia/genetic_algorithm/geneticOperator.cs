@@ -10,7 +10,6 @@ namespace geneticAlgo
     {
         double crossoverPercent;
         double mutationPercent;
-        double randomlyGeneratedPercent;
         List<int> randomlyGeneratedNbNeuronsByLayers;
         System.Random rand;
         
@@ -18,19 +17,17 @@ namespace geneticAlgo
 
         public geneticOperator()
         {
-            crossoverPercent = 0.7;
-            mutationPercent = 0.1;
-            randomlyGeneratedPercent = 0.2;
+            crossoverPercent = 0.1;
+            mutationPercent = 0.7;
             rand = new System.Random();
             randomlyGeneratedNbNeuronsByLayers = new List<int>(new int[] { 19, 32, 8, 3 });
         }
 
-        //crossoverPercent + mutationPercent + randomlyGeneratedPercent must be = 1 (so crossoverPercent + mutationPercent <1 ! )
+        //crossoverPercent + mutationPercent must be <= 1 (if <1 the rest will be the percentage of newly generated indivs)
         public geneticOperator(double crossoverPercent, double mutationPercent)
         {
             this.crossoverPercent = crossoverPercent;
             this.mutationPercent = mutationPercent;
-            this.randomlyGeneratedPercent = 1 - (crossoverPercent + mutationPercent);
             randomlyGeneratedNbNeuronsByLayers = new List<int>(new int[] { 19, 32, 8, 3 });
             rand = new System.Random();
         }
@@ -39,7 +36,6 @@ namespace geneticAlgo
         {
             this.crossoverPercent = crossoverPercent;
             this.mutationPercent = mutationPercent;
-            this.randomlyGeneratedPercent = 1 - (crossoverPercent + mutationPercent);
             randomlyGeneratedNbNeuronsByLayers = new List<int>(nbNeuronByLayers);
             rand = new System.Random();
         }
@@ -120,11 +116,12 @@ namespace geneticAlgo
             return newPop;
         }
 
-        public List<indiv> applyGeneticChangesPercent(List<indiv> pop, int totalPopSize)
+        public List<indiv> applyGeneticChangesPercent(List<indiv> pop)
         {
             List<indiv> newPop = new List<indiv>(pop);
             int nbrMutations = (int)Math.Floor(mutationPercent * pop.Count);
             int nbrCrossover = (int)Math.Floor(crossoverPercent * pop.Count);
+            Debug.Log("nbr to mutate : " + nbrMutations);
             List<indiv> shuffle = new List<indiv>(pop.OrderBy(item => rand.Next()));
             for(int i = 0; i < shuffle.Count; i++)
             {
