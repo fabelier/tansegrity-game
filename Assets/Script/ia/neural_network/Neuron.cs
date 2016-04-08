@@ -35,7 +35,7 @@ namespace Nn
             for (int i = 0; i < n_weights; i++)
             {
                 tmp = new Input();
-                tmp.weight = rand.NextDouble(); tmp.input = 0;
+                tmp.weight = rand.NextDouble()*0.01; tmp.input = 0;
                 inputs.Add(tmp);
             }
         }
@@ -194,6 +194,7 @@ namespace Nn
             double val = combinaison(inputs);
             activation(val);
         }
+
         public double fire()
         {
             try
@@ -215,7 +216,6 @@ namespace Nn
             for (int i = 0; i < inputs.Count; i++){//the first one is the bias with an input of 1
                 val = val + inputs[i].weight * inputs[i].input;
             }
-            //val += biais;
 
             return val;
         }
@@ -226,9 +226,11 @@ namespace Nn
         public double activation(double val, double lambda =1.0){
 
             // ACTIVATION FUNCTION
-            val = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
-            this.fire_val = val;
-            return val;
+            double res;
+            res = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
+            this.fire_val = res;
+            //Debug.Log("val : " + val+"res : "+res);
+            return res;
         }
     }
 }

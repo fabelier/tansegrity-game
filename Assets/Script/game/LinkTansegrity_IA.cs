@@ -136,7 +136,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
 
             // =========  fire  =====================================================
-            Debug.Log("toFire : "+toFire.ToString());
+            //Debug.Log("toFire : "+toFire.ToString());
             output = neuroNet.getNn().fire(toFire);
 
             // ==== APPLY output in the simulation ==================================
@@ -153,12 +153,12 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 springManager.setToControl(2);
             }
 
-            Debug.Log("Increment"+ increment+"DistArrival : " + dist_arrival);
+            //Debug.Log("Increment"+ increment+"DistArrival : " + dist_arrival);
             // ====  STOP ==========================================================
             if (increment >= max_increment || dist_arrival <0.01)
             {
                 calcEval(dist_arrival, increment);
-                Debug.Log("endEval : "+dist_arrival);
+                //Debug.Log("endEval : "+dist_arrival);
                 neuroNet.setEvalValue(dist_arrival);
                 Destroy(tansegrity);
                 Destroy(this);
