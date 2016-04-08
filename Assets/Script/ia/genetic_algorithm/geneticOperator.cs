@@ -11,6 +11,7 @@ namespace geneticAlgo
         double crossoverPercent;
         double mutationPercent;
         double randomlyGeneratedPercent;
+        List<int> randomlyGeneratedNbNeuronsByLayers;
         System.Random rand;
         
         // ====== CONSTRUCTORS ==================
@@ -21,6 +22,7 @@ namespace geneticAlgo
             mutationPercent = 0.1;
             randomlyGeneratedPercent = 0.2;
             rand = new System.Random();
+            randomlyGeneratedNbNeuronsByLayers = new List<int>(new int[] { 19, 32, 8, 3 });
         }
 
         //crossoverPercent + mutationPercent + randomlyGeneratedPercent must be = 1 (so crossoverPercent + mutationPercent <1 ! )
@@ -29,9 +31,18 @@ namespace geneticAlgo
             this.crossoverPercent = crossoverPercent;
             this.mutationPercent = mutationPercent;
             this.randomlyGeneratedPercent = 1 - (crossoverPercent + mutationPercent);
+            randomlyGeneratedNbNeuronsByLayers = new List<int>(new int[] { 19, 32, 8, 3 });
             rand = new System.Random();
         }
 
+        public geneticOperator(double crossoverPercent, double mutationPercent, List<int> nbNeuronByLayers)
+        {
+            this.crossoverPercent = crossoverPercent;
+            this.mutationPercent = mutationPercent;
+            this.randomlyGeneratedPercent = 1 - (crossoverPercent + mutationPercent);
+            randomlyGeneratedNbNeuronsByLayers = new List<int>(nbNeuronByLayers);
+            rand = new System.Random();
+        }
         // ====== METHODS ==================
 
         //given two indiv A & B, this method will choose a random layer and a random neuron position in that layer and then do a crossover
@@ -112,29 +123,22 @@ namespace geneticAlgo
         public List<indiv> applyGeneticChangesPercent(List<indiv> pop, int totalPopSize)
         {
             List<indiv> newPop = new List<indiv>(pop);
-            double geneticChangeProba;
             int nbrMutations = (int)Math.Floor(mutationPercent * pop.Count);
             int nbrCrossover = (int)Math.Floor(crossoverPercent * pop.Count);
-            List<indiv> popForCrossover = new List<indiv>();
-            for (int i = 0; i < pop.Count; i++)
+            List<indiv> shuffle = new List<indiv>(pop.OrderBy(item => rand.Next()));
+            for(int i = 0; i < shuffle.Count; i++)
             {
-                double selectCrossover = nbrCrossover / (pop.Count - i);
-                double selectMutation = nbrMutations / (pop.Count - i);
-                double r = rand.NextDouble();
-                if (r < selectCrossover)
-                {
-                    popForCrossover.Add(pop[i]);
-                }
-                if (r < selectMutation)
+                if (i < nbrMutations)
                 {
                     newPop.Add(mutate(pop[i]));
                 }
-            }
-            for(int i = 0; i < popForCrossover.Count; i++)
-            {
-                for(int j=0;j < popForCrossover.Count; j++)
+                else if(i < nbrMutations + nbrCrossover-1)
                 {
-                    newPop.AddRange(crossover(popForCrossover[i], popForCrossover[j]));
+                    newPop.AddRange(crossover(pop[i], pop[i + 1]));
+                }
+                else
+                {
+                    newPop.Add(new indiv(randomlyGeneratedNbNeuronsByLayers));
                 }
             }
             return newPop;

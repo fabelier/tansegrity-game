@@ -27,7 +27,7 @@ namespace geneticAlgo
             this.sizePop = 10;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
-            createPop(new List<int>(new int[] { 5, 4, 4,3 }));
+            createPop(new List<int>(new int[] { 19, 32, 8,3 }));
             this.bestIndiv = pop[0];
         }
 
@@ -87,10 +87,10 @@ namespace geneticAlgo
                 bestIndiv = pop[0];
 
                 //print the best indiv every 10% of the nbIterationMax
-                if (iteration % (nbIterationMax / 10) == 0)
-                {
-                    Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv));
-                }
+                //if (iteration % (nbIterationMax / 10) == 0)
+                //{
+                Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv));
+                //}
                 iteration += 1;
             }
         }
