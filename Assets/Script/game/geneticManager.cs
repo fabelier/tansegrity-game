@@ -20,12 +20,17 @@ namespace Assets.Script.game
 
         void Update()
         {
-            Debug.Log(state);
+            //Debug.Log(state);
             if (state == "first_frame")
             {
-                state = "waiting_for_evals";
+                state = "evaluation";
                 int nb_iterations = 1000;
+<<<<<<< HEAD
                 int nb_indiv_in_pop = 10;
+=======
+                int nb_indiv_in_pop = 8;
+                List<int> a = new List<int>(Enumerable.Range(1, 100));
+>>>>>>> origin/master
                 List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });
                 GD = new geneticAlgo.gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers);
 
@@ -35,10 +40,10 @@ namespace Assets.Script.game
             {
                 GD.generateNeighbors();
                 GD.runEvals();
-                state = "waiting_for_evals";
+                state = "evaluation";
             }
-            else if (state == "waiting_for_evals")
-            {
+            else if (state == "evaluation")
+            {//this will wait for structures to update until the end of their evaluation
                 if (GD.areEvalsFinished())
                 {
                     GD.changePop();

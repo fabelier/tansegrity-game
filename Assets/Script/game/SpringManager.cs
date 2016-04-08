@@ -23,17 +23,17 @@ public class SpringManager : MonoBehaviour {
 
 
 		if(Input.GetButton("Fire1") || toControl[0] == true) {
-			Debug.Log("Fire1");
+			//Debug.Log("Fire1");
 			upRaideur(toControl1);
             toControl[0] = false;
 		}
 		if(Input.GetButton("Fire2") || toControl[1] == true) {
-			Debug.Log("Fire2");
+			//Debug.Log("Fire2");
 			upRaideur(toControl2);
             toControl[1] = false;
         }
 		if(Input.GetButton("Fire3") || toControl[2] == true) {
-			Debug.Log("Fire3");
+			//Debug.Log("Fire3");
 			upRaideur(toControl3);
             toControl[2] = false;
         }
