@@ -26,7 +26,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 447996}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: e
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -64,9 +64,10 @@ GameObject:
   - 54: {fileID: 5466476}
   - 136: {fileID: 13633932}
   - 114: {fileID: 11498342}
-  m_Layer: 10
+  - 114: {fileID: 11496298}
+  m_Layer: 0
   m_Name: Stick 1
-  m_TagString: Untagged
+  m_TagString: stick1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -115,7 +116,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 497856}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: c
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
@@ -148,7 +149,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 451086}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: a
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
@@ -163,7 +164,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 439202}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: f
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -219,9 +220,10 @@ GameObject:
   - 54: {fileID: 5436872}
   - 136: {fileID: 13662054}
   - 114: {fileID: 11432686}
-  m_Layer: 10
+  - 114: {fileID: 11410180}
+  m_Layer: 0
   m_Name: Stick 2
-  m_TagString: Untagged
+  m_TagString: stick2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -234,7 +236,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 434958}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: d
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
@@ -249,7 +251,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 425950}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: b
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -306,9 +308,10 @@ GameObject:
   - 136: {fileID: 13637552}
   - 114: {fileID: 11459852}
   - 114: {fileID: 11411582}
-  m_Layer: 10
+  - 114: {fileID: 11468276}
+  m_Layer: 0
   m_Name: Stick
-  m_TagString: Untagged
+  m_TagString: stick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -322,7 +325,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 469650}
   - 114: {fileID: 11466992}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Tansegrity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1031,6 +1034,17 @@ MonoBehaviour:
   join2: {fileID: 439202}
   raideur: 5
   raideurVisee: 150
+--- !u!114 &11410180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39be46ed1cd978f4dbac1550b598a499, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11411582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1160,6 +1174,17 @@ MonoBehaviour:
   toControl2: {fileID: 11420812}
   toControl3: {fileID: 11403578}
   intensity: 0.1
+--- !u!114 &11468276
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 185512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39be46ed1cd978f4dbac1550b598a499, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11477380
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1205,6 +1230,17 @@ MonoBehaviour:
   join2: {fileID: 434958}
   raideur: 10
   raideurVisee: 200
+--- !u!114 &11496298
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 111852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39be46ed1cd978f4dbac1550b598a499, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11498342
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1266,7 +1302,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.x
@@ -1274,6 +1310,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_TagString
+      value: stick2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
