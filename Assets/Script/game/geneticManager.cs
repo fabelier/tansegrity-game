@@ -25,7 +25,7 @@ namespace Assets.Script.game
             {
                 state = "waiting_for_evals";
                 int nb_iterations = 1000;
-                int nb_indiv_in_pop = 16;
+                int nb_indiv_in_pop = 10;
                 List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });
                 GD = new geneticAlgo.gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers);
 

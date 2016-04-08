@@ -115,7 +115,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
             if (increment == 1) ini_pos = posTans; // A kind of initilisation
 
-            
+
 
             // =========  fire  =====================================================
             output = neuroNet.getNn().fire(toFire);
@@ -150,12 +150,20 @@ public class LinkTansegrity_IA : MonoBehaviour {
     {
         double val;
 
-        if(increment == max_increment)
+        if(increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
         {
-           // normaliser si il y a une map
-
-            val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+           // normaliser si il y a une map !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+           // val [0,1] -> [0,0.5]  
+            val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));   
         }
+        else
+        {
+            // normalisation
+            val = increment / max_increment;
+            // sigmoide val [0,1] -> [0.5, 1]
+            val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
+        }
+
 
         return 0;
     }

@@ -219,7 +219,7 @@ namespace Nn
         }
 
         // Function that descide if the neuron fire
-        // val    : must be in ]0,1]
+        // val    : must be in [-1,1]
         // lambda : in orther to control the slope of the function, the more lambda is high, the more the slope is important
         public double activation(double val, double lambda =1.0){
 
