@@ -94,6 +94,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         Vector3 slave;
+        double eval;
         if (isInit)
         {
             //Debug.Log("increment : " + increment);
@@ -136,7 +137,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
 
             // =========  fire  =====================================================
-            Debug.Log("toFire : "+toFire.ToString());
+            //Debug.Log("toFire : "+toFire.ToString());
             output = neuroNet.getNn().fire(toFire);
 
             // ==== APPLY output in the simulation ==================================
@@ -153,13 +154,13 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 springManager.setToControl(2);
             }
 
-            Debug.Log("Increment"+ increment+"DistArrival : " + dist_arrival);
+            //Debug.Log("Increment : "+ increment+"DistArrival : " + dist_arrival);
             // ====  STOP ==========================================================
             if (increment >= max_increment || dist_arrival <0.01)
             {
-                calcEval(dist_arrival, increment);
-                Debug.Log("endEval : "+dist_arrival);
-                neuroNet.setEvalValue(dist_arrival);
+                eval = calcEval(dist_arrival, increment);
+                Debug.Log("endEval : "+eval);
+                neuroNet.setEvalValue(eval);
                 Destroy(tansegrity);
                 Destroy(this);
             }
@@ -185,7 +186,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         }
 
 
-        return 0;
+        return val;
     }
 
     private Vector3 dividVect(Vector3 a, Vector3 b)

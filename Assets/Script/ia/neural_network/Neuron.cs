@@ -223,7 +223,7 @@ namespace Nn
         // Function that descide if the neuron fire
         // val    : must be in [-1,1]
         // lambda : in orther to control the slope of the function, the more lambda is high, the more the slope is important
-        public double activation(double val, double lambda =1.0){
+        public double activation(double val, double lambda =0.2){
 
             // ACTIVATION FUNCTION
             val = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
