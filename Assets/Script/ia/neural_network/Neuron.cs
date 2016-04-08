@@ -227,7 +227,7 @@ namespace Nn
 
             // ACTIVATION FUNCTION
             double res;
-            res = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
+            res = 2 / (1 + Mathf.Exp( (float) (-lambda * val))) -1;  // sigmoid function
             this.fire_val = res;
             //Debug.Log("val : " + val+"res : "+res);
             return res;
