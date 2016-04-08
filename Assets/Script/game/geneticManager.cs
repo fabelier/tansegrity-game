@@ -25,12 +25,7 @@ namespace Assets.Script.game
             {
                 state = "evaluation";
                 int nb_iterations = 1000;
-<<<<<<< HEAD
-                int nb_indiv_in_pop = 10;
-=======
                 int nb_indiv_in_pop = 8;
-                List<int> a = new List<int>(Enumerable.Range(1, 100));
->>>>>>> origin/master
                 List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });
                 GD = new geneticAlgo.gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers);
 
