@@ -128,7 +128,7 @@ namespace Nn
                 throw new IndexOutOfRangeException();
             }
         }
-        public void setBiais(double bias)
+        public void setBias(double bias)
         {
             this.inputs[0] = new Input { input = 1, weight = bias };
         }
@@ -223,7 +223,7 @@ namespace Nn
         // Function that descide if the neuron fire
         // val    : must be in [-1,1]
         // lambda : in orther to control the slope of the function, the more lambda is high, the more the slope is important
-        public double activation(double val, double lambda =1.0){
+        public double activation(double val, double lambda =0.2){
 
             // ACTIVATION FUNCTION
             double res;

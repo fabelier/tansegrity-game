@@ -149,7 +149,7 @@ namespace Nn {
             // tout les input 0<...<1
             // fait le transfert layer par layer des input
             double control;
-            double threashold = 0; // advice = 0
+            double threashold = 0.5; // advice = 0
             bool tmp_output;
             List<bool> output = new List<bool>();
             for (int i = 0; i < network.Count; i++)  // boucle in network
@@ -173,6 +173,7 @@ namespace Nn {
                         if (i == network.Count - 1 && control != -1)  // At the last layer, build the output
                         {
                             //toString();
+                            //Debug.Log("control : " + control);
                             if (control < threashold) tmp_output = false;
                             else tmp_output = true;
                             output.Add(tmp_output);
