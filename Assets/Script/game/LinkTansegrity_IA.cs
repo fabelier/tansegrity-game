@@ -27,10 +27,14 @@ public class LinkTansegrity_IA : MonoBehaviour {
     private List<double> toFire;
     private List<bool> output;
 
+    //get the limits of the terrain
+    // usefull to normalize the pos values
+    private Vector3 max;
+
     // code realated
     private bool isInit;
     private Vector3 arrival;
-    private Vector3 posTans, ini_pos;
+    private Vector3 posTans;
     private int increment;
     
 
@@ -38,6 +42,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     // Use this for a play with a trained Neural network
     void Start () {
+        Vector3 tmp1,tmp2,tmp3,tmp4;
+
         isFinished = false;
         isInit = true;
         Object loadedObject = Resources.Load("Tansegrity");
@@ -45,9 +51,22 @@ public class LinkTansegrity_IA : MonoBehaviour {
         tansegrity = Instantiate(loadedObject) as GameObject;
         springManager = tansegrity.GetComponent<SpringManager>() as SpringManager;
 
+        // get the limits of the terrain
 
-        
+        tmp1 = GameObject.Find("wall 1").transform.position;
+        tmp2 = GameObject.Find("wall 2").transform.position;
+        tmp3 = GameObject.Find("wall 3").transform.position;
+        tmp4 = GameObject.Find("wall 4").transform.position;
+
+        max = new Vector3( Mathf.Max(Mathf.Abs(tmp1.x),  Mathf.Abs(tmp2.x),  Mathf.Abs(tmp3.x),  Mathf.Abs(tmp4.x)),
+                           10,
+                          Mathf.Max(Mathf.Abs(tmp1.z),  Mathf.Abs(tmp2.z),  Mathf.Abs(tmp3.z), Mathf.Abs(tmp4.z)));
+       
+
+
+        //get the goal position
         arrival = GameObject.Find("Arrival").transform.position;
+        arrival = dividVect(arrival, max);
       
         increment = 0;
 
@@ -77,6 +96,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         Vector3 slave;
         if (isInit)
         {
+            //Debug.Log("increment : " + increment);
             // ============== Turn Initialisation ==================================
             List<double> toFire = new List<double>();
             increment += 1; // Count the number of turn
@@ -90,6 +110,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
             for (int i = 0; i < sticks.Length; i++) // compute all stats related to the sticks
             {
                 slave = sticks[i].ObjectA.transform.position; //  stick first end
+                slave = dividVect(slave, max);                 //  Normalise slave
                 posStick.Add(slave);
                 posTans += slave;                             //at the end compute the barycenter of the tansegrity
                 toFire.Add((double)slave.x);
@@ -97,6 +118,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 toFire.Add((double)slave.z);
 
                 slave = sticks[i].ObjectB.transform.position; //  stick second end
+                slave = dividVect(slave, max);                 //  Normalise slave
                 posStick.Add(slave);
                 posTans += slave;                             //at the end compute the barycenter of the tansegrity
                 toFire.Add((double)slave.x);
@@ -112,11 +134,9 @@ public class LinkTansegrity_IA : MonoBehaviour {
             toFire.Add(dist_arrival);
 
 
-            if (increment == 1) ini_pos = posTans; // A kind of initilisation
-
-
 
             // =========  fire  =====================================================
+            Debug.Log("toFire : "+toFire.ToString());
             output = neuroNet.getNn().fire(toFire);
 
             // ==== APPLY output in the simulation ==================================
@@ -133,10 +153,12 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 springManager.setToControl(2);
             }
 
+            Debug.Log("Increment"+ increment+"DistArrival : " + dist_arrival);
             // ====  STOP ==========================================================
-            if (increment >= max_increment || dist_arrival <1)
+            if (increment >= max_increment || dist_arrival <0.01)
             {
                 calcEval(dist_arrival, increment);
+                Debug.Log("endEval : "+dist_arrival);
                 neuroNet.setEvalValue(dist_arrival);
                 Destroy(tansegrity);
                 Destroy(this);
@@ -150,7 +172,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
         if(increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
         {
-           // normaliser si il y a une map !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+           // it is already normalized
            // val [0,1] -> [0,0.5]  
             val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));   
         }
@@ -164,5 +186,10 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
 
         return 0;
+    }
+
+    private Vector3 dividVect(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 }

@@ -31,6 +31,7 @@ public class SpringManager : MonoBehaviour {
 			//Debug.Log("Fire2");
 			upRaideur(toControl2);
             toControl[1] = false;
+
         }
 		if(Input.GetButton("Fire3") || toControl[2] == true) {
 			//Debug.Log("Fire3");
