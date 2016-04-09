@@ -9,8 +9,8 @@ namespace geneticAlgo
 {
     public class indiv
     {
-        Nn.Neural_network Nn;
-        double evalValue;//-1 represent the eval not computed
+        public Nn.Neural_network Nn { get; set; }
+        public double evalValue { get; set; } //-1 represent the eval not computed
 
         // ====== CONSTRUCTORS ==================
 

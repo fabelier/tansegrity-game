@@ -7,21 +7,20 @@ namespace Nn
 {
     public struct Input
     {
-        public double input;// { get; set; }
-        public double weight;// { get; set; }
+        public double input { get; set; }
+        public double weight { get; set; }
     }
 
     public class Neuron
     {
-       public List<Input> inputs; //the first Input has an input value of 1 because it is the bias of the neuron
-       public double fire_val { get; private set; }  // is the neuron activated ?  default: 0
+       public List<Input> inputs { get; set; } //the first Input has an input value of 1 because it is the bias of the neuron
+       public double fire_val { get; set; }  // is the neuron activated ?  default: 0
  
         // ======== CONSTRUCTOR ==============================
 
         public Neuron()
-        {
+        {//do not set bias because this constructor is used for the load and when loading the bias will be added
             inputs = new List<Input>();
-            inputs[0] = new Input { input = 1, weight = 1 };//set bias to 1
             fire_val = 0;
         }
         // this Neuron is initialited with random weights
@@ -87,6 +86,12 @@ namespace Nn
             this.inputs = new List<Input>(inputs);
             // Take the descision
             main(inputs);
+        }
+
+        public Neuron(Neuron N)
+        {
+            inputs = new List<Input>(N.inputs);
+            fire_val = N.fire_val;
         }
 
         //========== Methods =======================================

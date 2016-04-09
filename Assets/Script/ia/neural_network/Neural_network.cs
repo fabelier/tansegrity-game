@@ -75,8 +75,8 @@ namespace Nn {
         }
         public Neural_network(Neural_network neuroNet)
         {
-            network = neuroNet.getNetwork();
-            output = neuroNet.getOutput();
+            network = new List<List<Neuron>>(neuroNet.getNetwork());
+            output = new List<bool>(neuroNet.getOutput());
         }
 
         // ===== METHODS =========================
@@ -149,7 +149,7 @@ namespace Nn {
             // tout les input 0<...<1
             // fait le transfert layer par layer des input
             double control;
-            double threashold = 0.5; // advice = 0
+            double threashold = 0; // advice = 0
             bool tmp_output;
             List<bool> output = new List<bool>();
             for (int i = 0; i < network.Count; i++)  // boucle in network

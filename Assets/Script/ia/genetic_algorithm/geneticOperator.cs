@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace geneticAlgo
 {
-    class geneticOperator
+    public class geneticOperator
     {
-        double crossoverPercent;
-        double mutationPercent;
-        List<int> randomlyGeneratedNbNeuronsByLayers;
+        public double crossoverPercent { get; set; }
+        public double mutationPercent { get; set; }
+        public List<int> randomlyGeneratedNbNeuronsByLayers { get; set; }
         System.Random rand;
         
         // ====== CONSTRUCTORS ==================
@@ -37,6 +37,14 @@ namespace geneticAlgo
             this.crossoverPercent = crossoverPercent;
             this.mutationPercent = mutationPercent;
             randomlyGeneratedNbNeuronsByLayers = new List<int>(nbNeuronByLayers);
+            rand = new System.Random();
+        }
+
+        public  geneticOperator(geneticOperator GO)
+        {
+            crossoverPercent = GO.crossoverPercent;
+            mutationPercent = GO.mutationPercent;
+            randomlyGeneratedNbNeuronsByLayers = new List<int>(GO.randomlyGeneratedNbNeuronsByLayers);
             rand = new System.Random();
         }
         // ====== METHODS ==================

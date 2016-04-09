@@ -79,7 +79,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
     public void Init(indiv saved_neuroNet)
     {
         neuroNet = saved_neuroNet;
-        Debug.LogWarning(neuroNet.ToString());
 
         //Error gestion
         if(saved_neuroNet.getNbNeuronAtLayer(0) != 19)
@@ -177,9 +176,10 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
         if(increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
         {
-           // it is already normalized
-           // val [0,1] -> [0,0.5]  
-            val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));   
+            // it is already normalized
+            // val [0,1] -> [0,0.5]  
+            // val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+            val = (1 - dist_arrival) / 2;
         }
         else
         {

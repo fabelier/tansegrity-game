@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace geneticAlgo
 {
+    //[Serializable]
     public class gradientDescent
     {
-        int iteration;
-        List<indiv> pop;
-        int sizePop;
-        int nbIterationMax;
+        public int iteration { get; set; }
+        public List<indiv> pop { get; set; }
+        public int sizePop { get; set; }
+        public int nbIterationMax { get; set; }
         System.Random rand;
-        indiv bestIndiv;
-        geneticOperator GO;
-        List<indiv> selectedIndivs;
+        public indiv bestIndiv { get; set; }
+        public geneticOperator GO { get; set; }
+        public List<indiv> selectedIndivs { get; set; }
 
         // ====== CONSTRUCTORS ==================
 
@@ -27,8 +31,8 @@ namespace geneticAlgo
             this.sizePop = 10;
             this.GO = new geneticOperator();
             this.rand = new System.Random();
-            createPop(new List<int>(new int[] { 19, 32, 8,3 }));
-            this.bestIndiv = pop[0];
+            this.pop = new List<indiv>();
+            this.bestIndiv = null;
         }
 
         // construct a gradientDescent which will evolve sizePop neural networks for nbIterationMax iterations
@@ -56,6 +60,19 @@ namespace geneticAlgo
             this.bestIndiv = pop[0];
         }
 
+        //constructor by copy
+        public gradientDescent(gradientDescent g)
+        {
+            iteration = g.iteration;
+            pop = new List<indiv>(g.pop);
+            sizePop = g.sizePop;
+            nbIterationMax = g.nbIterationMax;
+            rand = new System.Random();
+            GO = new geneticOperator(g.GO);
+            selectedIndivs = new List<indiv>(g.selectedIndivs);
+            bestIndiv = new indiv(g.bestIndiv);
+            runEvals();
+        }
         // ====== METHODS ==================
 
         //main loop will use generateNeighbors, runEvals, and then changePop on each iteration :
@@ -103,7 +120,7 @@ namespace geneticAlgo
                 //print the best indiv every 10% of the nbIterationMax
                 //if (iteration % (nbIterationMax / 10) == 0)
                 //{
-                Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv));
+                Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv.getEvalValue()));
                 //}
                 iteration += 1;
             }
@@ -206,11 +223,51 @@ namespace geneticAlgo
             }
         }
 
+
+        public static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+        {
+            TextWriter writer = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                writer = new StreamWriter(filePath, append);
+                serializer.Serialize(writer, objectToWrite);
+            }
+            finally
+            {
+                if (writer != null)
+                    writer.Close();
+            }
+        }
+
+
+        public static T ReadFromXmlFile<T>(string filePath) where T : new()
+        {
+            TextReader reader = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                reader = new StreamReader(filePath);
+                return (T)serializer.Deserialize(reader);
+            }
+            catch(Exception ex)
+            {
+                Debug.Log(ex);
+                return new T();
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+        }
+
         // ====== GET/SET ==================
 
         public indiv getBestIndiv()
         {
             return bestIndiv;
         }
+
     }
 }
