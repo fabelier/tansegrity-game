@@ -29,7 +29,7 @@ public class Spring : MonoBehaviour {
 
 		len = diff.magnitude;
 
-		force = raideur * Mathf.Pow (len, 2) * diff.normalized * Time.deltaTime;
+		force = raideur * Mathf.Pow (len, 2) * diff.normalized * 0.017f;
 
         // ajout des forces
 		cylinder2.AddForceAtPosition (force, join2.position);
@@ -43,7 +43,7 @@ public class Spring : MonoBehaviour {
 
 		transform.localScale = new Vector3(0.1f,len*0.5f  ,0.1f);
 
-		raideur = Mathf.Lerp (raideur, raideurVisee, Time.deltaTime);
+		raideur = Mathf.Lerp (raideur, raideurVisee, 0.017f);
 
 	}
 

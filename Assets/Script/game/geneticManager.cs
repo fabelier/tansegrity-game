@@ -26,7 +26,7 @@ namespace Assets.Script.game
             //Debug.Log(state);
             if (state == "first_frame")
             {
-                int load = 1;
+                int load = 0;
                 if (load == 1)
                 {
                     GD = new gradientDescent(gradientDescent.ReadFromXmlFile<gradientDescent>("savedEvolution/test1.xml"));

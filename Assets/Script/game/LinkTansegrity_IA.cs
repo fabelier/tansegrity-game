@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using geneticAlgo;
 
 // Récupére les stat
@@ -11,7 +12,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     public bool isFinished;
     public double dist_arrival; // distance in between the tansegrity and the arrival
-    public int max_increment = 1000;
+    public int max_increment = 5000;
 
     //// Spring
     private SpringManager springManager;
@@ -36,7 +37,10 @@ public class LinkTansegrity_IA : MonoBehaviour {
     private Vector3 arrival;
     private Vector3 posTans;
     private int increment;
-    
+
+    // memory 
+    private List<bool> memory = new List<bool>();
+    private int sinceWhen= 0;
 
 
 
@@ -138,10 +142,12 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // =========  fire  =====================================================
             //Debug.Log("toFire : "+toFire.ToString());
             output = neuroNet.getNn().fire(toFire);
-            //if(output[0] == false || output[1]==false || output[2] == false)
-            //{
-            //    Debug.Log("la c'est false");
-            //}
+
+            // === Check if the simulation move ====================================
+            if(increment >1)
+                isTansMoving(output, memory);
+
+
             // ==== APPLY output in the simulation ==================================
             if (output[0] == true)
             {
@@ -159,7 +165,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
             //Debug.Log("Increment : "+ increment+"DistArrival : " + dist_arrival);
             // ====  STOP ==========================================================
-            if (increment >= max_increment || dist_arrival <0.01)
+            if (increment >= max_increment || dist_arrival <0.01 )
             {
                 eval = calcEval(dist_arrival, increment);
                 //Debug.Log("endEval : "+eval);
@@ -178,7 +184,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         {
             // it is already normalized
             // val [0,1] -> [0,0.5]  
-            // val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+            //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
             val = (1 - dist_arrival) / 2;
         }
         else
@@ -196,5 +202,20 @@ public class LinkTansegrity_IA : MonoBehaviour {
     private Vector3 dividVect(Vector3 a, Vector3 b)
     {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
+    }
+
+    // check if the 
+    private void isTansMoving(List<bool> output, List<bool> memory, int identicalParam = 50)
+    {
+
+        if (output.SequenceEqual(memory))
+            sinceWhen += 1;
+        else sinceWhen = 0;
+
+        if (sinceWhen == identicalParam)
+        {
+            increment = max_increment;
+            Debug.Log(" JE NE BOUGE PAS JE ME FAIT SUPPRIMER !!!!");
+        }
     }
 }
