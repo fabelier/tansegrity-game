@@ -37,6 +37,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
     private Vector3 arrival;
     private Vector3 posTans;
     private int increment;
+    private bool color = false;
 
     // memory 
     private List<bool> memory = new List<bool>();
@@ -96,13 +97,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
             throw new System.Exception();
         }
 
-        if (color) // for the last best indiv.
-        {
-            for (int i = 0; i < sticks.Length; i++)
-            {
-                sticks[i].GetComponent<MeshRenderer>().material.color = Color.gray;
-            }
-        }
+        
         isInit = true;
     }
     // FAIRE un init avec limite de temps ??
@@ -111,9 +106,20 @@ public class LinkTansegrity_IA : MonoBehaviour {
 	void Update () {
         Vector3 slave;
         double eval;
+
+
         if (isInit)
         {
-            //Debug.Log("increment : " + increment);
+            if (increment == 0)
+            {
+                if (color) // for the last best indiv.
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        sticks[i].GetComponent<MeshRenderer>().material.color = Color.green;
+                    }
+                }
+            }
             // ============== Turn Initialisation ==================================
             List<double> toFire = new List<double>();
             increment += 1; // Count the number of turn
@@ -185,7 +191,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
             {
                 eval = calcEval(dist_arrival, increment, speed);
                 //Debug.Log("endEval : "+eval);
-                neuroNet.setEvalValue(eval);
+                if( !color)
+                    neuroNet.setEvalValue(eval);
                 Destroy(tansegrity);
                 Destroy(this);
             }
