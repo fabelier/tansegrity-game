@@ -47,7 +47,7 @@ namespace geneticAlgo
             this.GO = new geneticOperator();
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
-            this.bestIndiv = pop[0];
+            this.bestIndiv = new indiv(pop[0]);
         }
 
         //same but with a set percentage of the pop which will be mutated and crossovered
@@ -60,7 +60,7 @@ namespace geneticAlgo
             this.GO = new geneticOperator(mutantPercent, crossoveredPercent);
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
-            this.bestIndiv = pop[0];
+            this.bestIndiv = new indiv(pop[0]);
         }
 
         //constructor by copy
@@ -120,7 +120,7 @@ namespace geneticAlgo
                 else
                     pop = tournamentSelection(pop, sizePop);
 
-                bestIndiv = pop[0];
+                bestIndiv = new indiv(pop[0]);
 
                 //print the best indiv every 10% of the nbIterationMax
                 //if (iteration % (nbIterationMax / 10) == 0)
