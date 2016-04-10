@@ -34,7 +34,7 @@ namespace Assets.Script.game
                 }
                 else
                 {
-                    int nb_iterations = 1000;
+                    int nb_iterations = 10000;
                     int nb_indiv_in_pop = 64;
                     bool doTournament = true;
                     List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });

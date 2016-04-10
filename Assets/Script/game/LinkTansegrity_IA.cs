@@ -198,7 +198,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         //else
         //{
         //    // normalisation
-        //    val = 0.5+ (1-increment / max_increment);
+        //    val = 0.5 + (1 - increment / max_increment);
         //    // sigmoide val [0,1] -> [0.5, 1]
         //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
         //}
