@@ -426,6 +426,45 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 468780, guid: cafb4752375f32b46b04cae519e602f3, type: 2}
   m_PrefabInternal: {fileID: 77105287}
+--- !u!1 &102692541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 102692543}
+  - 114: {fileID: 102692542}
+  m_Layer: 0
+  m_Name: FPSMeter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &102692542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 102692541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87f038ba8ead66d46bac9a3721933697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &102692543
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 102692541}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.468369, y: 4.8015766, z: -3.201459}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
 --- !u!4 &159626999 stripped
 Transform:
   m_PrefabParentObject: {fileID: 441896, guid: 9b8ff118d3e1bac42a88f910b60a3080, type: 2}

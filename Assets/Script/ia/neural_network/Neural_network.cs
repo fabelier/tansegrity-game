@@ -33,7 +33,7 @@ namespace Nn {
                     if (i == 0)  // special treatment for first layer, that take input of the network
                     {                                                // for this case the weight is    
                         List<double> n = new List<double>(); n.Add(1); // a List of one element valued at 1
-                        tmp = new Neuron(n, rand); 
+                        tmp = new Neuron(n, rand, false); 
                         //tmp = new Neuron(n,0);    // and the biais is set to 0
                     }
                     else
@@ -156,7 +156,6 @@ namespace Nn {
             {
                 for (int j = 0; j < network[i].Count; j++) // boucle in each layer to set the inputs
                 {
-                    
                     if (i == 0) // First layer have to be taken differently
                     {
                         network[i][j].setInput(network_input[j], 0);
@@ -164,9 +163,10 @@ namespace Nn {
                     }
                     else
                     {
+                        network[i][j].setInput(1, 0);//bias
                         for (int k = 0; k < network[i - 1].Count; k++) // Parse the previous layer and take outputs of neurons
                         {
-                            network[i][j].setInput(network[i - 1][k].fire_val,k);  // get the output of Neurons in layer i-1
+                            network[i][j].setInput(network[i - 1][k].fire_val,k+1);  // get the output of Neurons in layer i-1
                         }
                         control = network[i][j].fire();
                         

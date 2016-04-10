@@ -25,26 +25,28 @@ namespace Nn
         }
         // this Neuron is initialited with random weights
         // and Input.input values at 0
-        public Neuron(int n_weights, System.Random rand)
+        public Neuron(int n_weights, System.Random rand, bool bias = true)
         {
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            inputs.Add(new Input { input = 1, weight = rand.NextDouble()*2-1 });//set bias between -1 & 1
+            if(bias)
+                inputs.Add(new Input { input = 1, weight = rand.NextDouble()*2-1 });//set bias between -1 & 1
             for (int i = 0; i < n_weights; i++)
             {
                 tmp = new Input();
-                tmp.weight = rand.NextDouble()*0.01; tmp.input = 0;
+                tmp.weight = rand.NextDouble()*2-1;//weigths between -1 and 1
+                tmp.input = 0;
                 inputs.Add(tmp);
             }
         }
-        //public Neuron(List<double> weight, double biais)
-        public Neuron(List<double> weight, System.Random rand)
+        public Neuron(List<double> weight, System.Random rand, bool bias = true)
         {
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
+            if(bias)
+                inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
             for (int i = 0; i < weight.Count; i++)
             {
                 tmp = new Input();
@@ -54,18 +56,18 @@ namespace Nn
         }
 
         //public Neuron(List<double> weight , List<double> input, double biais)
-        public Neuron(List<double> weight, List<double> input, System.Random rand)
+        public Neuron(List<double> weight, List<double> input, System.Random rand, bool bias = true)
         {
             if(weight.Count != input.Count)
             {
                 Debug.Log("The weight and the input list have different size ! What did you expect ?");
                 throw new IndexOutOfRangeException();
             }
-            //this.biais = biais;
             // Input fill
             Input tmp;
             this.inputs = new List<Input>();
-            inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
+            if(bias)
+                inputs.Add(new Input { input = 1, weight = rand.NextDouble() * 2 - 1 });//set bias between -1 & 1
             for (int i = 0; i < weight.Count; i++)
             {
                 tmp = new Input();

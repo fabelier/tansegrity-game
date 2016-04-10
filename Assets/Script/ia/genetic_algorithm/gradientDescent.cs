@@ -124,7 +124,7 @@ namespace geneticAlgo
                 //print the best indiv every 10% of the nbIterationMax
                 //if (iteration % (nbIterationMax / 10) == 0)
                 //{
-                Debug.Log(string.Format("iteration : {0}, best_indiv : {1}", iteration, bestIndiv.getEvalValue()));
+                Debug.Log(string.Format("iteration : {0}, best_indiv fitness : {1}\nbest_indiv : {2}", iteration, bestIndiv.getEvalValue(), bestIndiv));
                 //}
                 iteration += 1;
             }

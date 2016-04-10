@@ -151,7 +151,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // === Check if the simulation move ====================================
             if(increment >1)
                 isTansMoving(output, memory);
-            currentPos = getPos(toFire.GetRange(0, 18));
+            currentPos = posTans;
             speed += (posMemory - currentPos).magnitude;
             posMemory = currentPos;
 
@@ -182,15 +182,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 Destroy(this);
             }
         }
-    }
-
-    private Vector3 getPos(List<double> pos)
-    {
-        //pos[1:3] first end of first stick, pos[4:6] second end of first stick
-        Vector3 res = new Vector3(((float) pos[0] + (float) pos[3] + (float) pos[6] + (float) pos[9] + (float) pos[12] + (float) pos[15])/6,
-                                  ((float) pos[1] + (float) pos[4] + (float) pos[7] + (float) pos[10] + (float) pos[13] + (float) pos[16]) / 6,
-                                  ((float) pos[2] + (float) pos[5] + (float) pos[8] + (float) pos[11] + (float) pos[14] + (float) pos[17]) / 6);
-        return res;
     }
 
     private double calcEval(double dist_arrival, double nb_increment, double speed)

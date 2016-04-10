@@ -53,7 +53,7 @@ namespace geneticAlgo
         //by cuting A and B at this pos and mixing them together, and it will return a list containing the 2 mixed indivs
         public List<indiv> crossover(indiv A, indiv B)
         {
-            int layer_num_Crossingover = rand.Next(0, A.getNbLayer()-1);
+            int layer_num_Crossingover = rand.Next(1, A.getNbLayer()-1);//in the first layer all weigths are 1 and can't change so no need to crossover at this layer
             int Neuron_num_Crossingover = rand.Next(0, A.getNbNeuronAtLayer(layer_num_Crossingover)-1);
 
             List<Nn.Neuron> layer_CrossingoverA = new List<Nn.Neuron>(A.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
@@ -83,7 +83,7 @@ namespace geneticAlgo
         //this method will choose a random weigth of a random neuron of a random layer and modify it by a random number between -0.1 and 0.1
         public indiv mutate(indiv A)
         {
-            int layer_num_mutation = rand.Next(0, A.getNbLayer());
+            int layer_num_mutation = rand.Next(1, A.getNbLayer());//weights of the first layer must stay 1
             int Neuron_num_mutation = rand.Next(0, A.getNbNeuronAtLayer(layer_num_mutation));
             int weigth_num_mutation = rand.Next(0, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getNbWeigths());
             double mutation = (rand.NextDouble()*2-1)/10; //mutation between -0.1 and 0.1
