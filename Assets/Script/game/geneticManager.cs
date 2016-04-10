@@ -35,7 +35,7 @@ namespace Assets.Script.game
                 else
                 {
                     int nb_iterations = 1000;
-                    int nb_indiv_in_pop = 32;
+                    int nb_indiv_in_pop = 64;
                     bool doTournament = true;
                     List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });
                     GD = new gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers, doTournament);
@@ -61,6 +61,21 @@ namespace Assets.Script.game
 
 
         }
+        void OnGUI()
+        {
+            int w = Screen.width, h = Screen.height;
+
+            GUIStyle style = new GUIStyle();
+
+            Rect rect = new Rect(0, h*0.98f, w, h*2/100);
+            style.alignment = TextAnchor.LowerLeft;
+            style.fontSize = h * 2 / 100;
+            style.normal.textColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            string text = string.Format("best fitness : {0}, iteration : {1}", GD.getBestIndiv().getEvalValue(), GD.iteration);
+            GUI.Label(rect, text, style);
+        }
+
+
         void OnDestroy()
         {
             gradientDescent.WriteToXmlFile("savedEvolution/test1.xml", GD);
