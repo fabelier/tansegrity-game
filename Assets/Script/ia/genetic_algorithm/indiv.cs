@@ -66,10 +66,13 @@ namespace geneticAlgo
         // ====== METHODS ==================
 
         //create a tansegrity structure controlled by the Nn on the environement
-        public void eval()
+        public void eval(bool set_eval = true)
         {
             GameObject link = UnityEngine.Object.Instantiate(Resources.Load("Link")) as GameObject;
-            link.GetComponent<LinkTansegrity_IA>().Init(this);
+            if (set_eval)
+                link.GetComponent<LinkTansegrity_IA>().Init(this);
+            else
+                link.GetComponent<LinkTansegrity_IA>().Init(this, true);
            
         }
 

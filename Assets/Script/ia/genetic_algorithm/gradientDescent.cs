@@ -104,6 +104,7 @@ namespace geneticAlgo
                         pop[ind].eval();
                     }
                 }
+                bestIndiv.eval(false);//just 
             }
         }
 

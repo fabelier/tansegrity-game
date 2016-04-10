@@ -57,7 +57,14 @@ namespace geneticAlgo
             int Neuron_num_Crossingover = rand.Next(0, A.getNbNeuronAtLayer(layer_num_Crossingover)-1);
 
             List<Nn.Neuron> layer_CrossingoverA = new List<Nn.Neuron>(A.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
-            layer_CrossingoverA.AddRange(B.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, B.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
+            try
+            {
+                layer_CrossingoverA.AddRange(B.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, B.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
+            }
+            catch
+            {
+                Debug.Log("erreur pendant crossingover : layer_num : " + layer_num_Crossingover + ", neuron_num : " + Neuron_num_Crossingover + ", number_neuron_at_layer : B : " + B.getNbNeuronAtLayer(layer_num_Crossingover)+" A : "+ A.getNbNeuronAtLayer(layer_num_Crossingover));
+            }
 
             List<Nn.Neuron> layer_CrossingoverB = new List<Nn.Neuron>(B.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
             layer_CrossingoverB.AddRange(A.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, A.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
