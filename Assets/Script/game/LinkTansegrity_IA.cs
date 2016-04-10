@@ -84,8 +84,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
        
     }
 
-   
-    public void Init(indiv saved_neuroNet)
+
+    public void Init(indiv saved_neuroNet, bool color = false)
     {
         neuroNet = saved_neuroNet;
 
@@ -94,6 +94,14 @@ public class LinkTansegrity_IA : MonoBehaviour {
         {
             Debug.Log("Initialized with a Neural network with wrong first layer size");
             throw new System.Exception();
+        }
+
+        if (color) // for the last best indiv.
+        {
+            for (int i = 0; i < sticks.Length; i++)
+            {
+                sticks[i].GetComponent<MeshRenderer>().material.color = Color.gray;
+            }
         }
         isInit = true;
     }
