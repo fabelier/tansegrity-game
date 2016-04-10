@@ -70,10 +70,9 @@ namespace geneticAlgo
         {
             GameObject link = UnityEngine.Object.Instantiate(Resources.Load("Link")) as GameObject;
             if (set_eval)
-                link.GetComponent<LinkTansegrity_IA>().Init(this);
+                link.GetComponent<LinkTansegrity_IA>().Init(this, link);
             else
-                link.GetComponent<LinkTansegrity_IA>().Init(this, true);
-           
+                link.GetComponent<LinkTansegrity_IA>().Init(this, link, true);
         }
 
         //check if unity has finished to evaluate the indiv in the environnement

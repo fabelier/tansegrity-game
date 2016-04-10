@@ -8,6 +8,7 @@ using geneticAlgo;
 
 public class LinkTansegrity_IA : MonoBehaviour {
     public indiv neuroNet;
+    public GameObject mySelf;
     public GameObject tansegrity;
 
     public bool isFinished;
@@ -86,10 +87,11 @@ public class LinkTansegrity_IA : MonoBehaviour {
     }
 
 
-    public void Init(indiv saved_neuroNet, bool color = false)
+    public void Init(indiv saved_neuroNet, GameObject mySelf, bool color = false)
     {
         neuroNet = saved_neuroNet;
-
+        this.mySelf = mySelf;
+        this.color = color;
         //Error gestion
         if(saved_neuroNet.getNbNeuronAtLayer(0) != 19)
         {
@@ -116,7 +118,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        sticks[i].GetComponent<MeshRenderer>().material.color = Color.green;
+                        sticks[i].GetComponent<MeshRenderer>().material.color = Color.black;
                     }
                 }
             }
@@ -194,7 +196,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
                 if( !color)
                     neuroNet.setEvalValue(eval);
                 Destroy(tansegrity);
-                Destroy(this);
+                Destroy(mySelf);
             }
         }
     }
