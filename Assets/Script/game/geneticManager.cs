@@ -18,7 +18,8 @@ namespace Assets.Script.game
         void Start()
         {
             state = "first_frame";
-          
+            Application.runInBackground = true;
+
         }
 
         void Update()
@@ -35,8 +36,9 @@ namespace Assets.Script.game
                 {
                     int nb_iterations = 1000;
                     int nb_indiv_in_pop = 32;
+                    bool doTournament = true;
                     List<int> nb_neurons_by_layers = new List<int>(new int[] { 19, 32, 8, 3 });
-                    GD = new gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers);
+                    GD = new gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers, doTournament);
                 }
 
                 state = "evaluation";

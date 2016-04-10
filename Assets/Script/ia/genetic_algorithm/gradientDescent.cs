@@ -19,13 +19,14 @@ namespace geneticAlgo
         System.Random rand;
         public indiv bestIndiv { get; set; }
         public geneticOperator GO { get; set; }
-        public List<indiv> selectedIndivs { get; set; }
+        public bool DoTournament { get; set; }
 
         // ====== CONSTRUCTORS ==================
 
         // basic constuctor not very usefull
         public gradientDescent()
         {
+            this.DoTournament = false;
             this.iteration = 0;
             this.nbIterationMax = 1000;
             this.sizePop = 10;
@@ -37,8 +38,9 @@ namespace geneticAlgo
 
         // construct a gradientDescent which will evolve sizePop neural networks for nbIterationMax iterations
         // the 1st element of nbNeuronByLayers is the nbr of neurons on the input layer, and the last element is the number of outputs of the last layer
-        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers)
+        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, bool DoTournament)
         {
+            this.DoTournament = DoTournament;
             this.iteration = 0;
             this.nbIterationMax = nbIterationMax;
             this.sizePop = sizePop;
@@ -49,8 +51,9 @@ namespace geneticAlgo
         }
 
         //same but with a set percentage of the pop which will be mutated and crossovered
-        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, double mutantPercent, double crossoveredPercent)
+        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, double mutantPercent, double crossoveredPercent, bool DoTournament)
         {
+            this.DoTournament = DoTournament;
             this.iteration = 0;
             this.nbIterationMax = nbIterationMax;
             this.sizePop = sizePop;
@@ -63,13 +66,13 @@ namespace geneticAlgo
         //constructor by copy
         public gradientDescent(gradientDescent g)
         {
+            DoTournament = g.DoTournament;
             iteration = g.iteration;
             pop = new List<indiv>(g.pop);
             sizePop = g.sizePop;
             nbIterationMax = g.nbIterationMax;
             rand = new System.Random();
             GO = new geneticOperator(g.GO);
-            selectedIndivs = new List<indiv>(g.selectedIndivs);
             bestIndiv = new indiv(g.bestIndiv);
             runEvals();
         }
@@ -84,11 +87,7 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
-
-                // selection by tournament
-                //selectedIndivs = tournamentSelection(pop, pop.Count / 2);
-                //apply changes on the selected pop to create new indivs
-                //pop = GO.applyGeneticChanges(selectedIndivs, sizePop);
+                //apply changes on the pop to create new indivs
                 pop = GO.applyGeneticChangesPercent(pop);
             }
         }
@@ -112,8 +111,13 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
-                // select the sizePop best indivs from the newly generated pop to have the same size as pop for the next iteration
-                pop = simpleSelection(pop);
+                // simple selection
+                if (DoTournament == false)
+                    pop = simpleSelection(pop);
+
+                // selection by tournament
+                else
+                    pop = tournamentSelection(pop, sizePop);
 
                 bestIndiv = pop[0];
 
@@ -152,9 +156,16 @@ namespace geneticAlgo
         public List<indiv> tournamentSelection(List<indiv> pop, int numberOfRounds = 2)
         {
             //choose 2 indiv randomly with proba accorded to their eval values and select the best out of the two. Repeat the process numberOfRounds times.
-            // Warning ! numberOfRounds needs to be >= 2
+            // Warning ! numberOfRounds needs to be >= 2 because the first round is always won by the better indiv
             double somme;
+            indiv max = new indiv();
+            for(int i = 0; i < pop.Count; i++)
+            {
+                if (pop[i].getEvalValue() > max.getEvalValue())
+                    max = pop[i];
+            }
             List<indiv> winners = new List<indiv>();
+            winners.Add(max);
             List<indiv> competitors = new List<indiv>(pop);
             List<double> proba;
             indiv firstCompetitor = new indiv();
@@ -207,7 +218,7 @@ namespace geneticAlgo
                     competitors.Remove(firstCompetitor);
                 }
                 round += 1;
-            } while (round <= numberOfRounds);
+            } while (round <= numberOfRounds-1);
             return winners;
         }
 

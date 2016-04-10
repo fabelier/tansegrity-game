@@ -40,6 +40,9 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     // memory 
     private List<bool> memory = new List<bool>();
+    private Vector3 posMemory;
+    private Vector3 currentPos;
+    private double speed;
     private int sinceWhen= 0;
 
 
@@ -73,6 +76,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
         arrival = dividVect(arrival, max);
       
         increment = 0;
+
+        posMemory = new Vector3(0,0,0);//TODO compute real position based on the gravity center of the 3 sticks
 
         // Gestion des stick
         sticks = tansegrity.GetComponentsInChildren<Stick>();
@@ -146,6 +151,9 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // === Check if the simulation move ====================================
             if(increment >1)
                 isTansMoving(output, memory);
+            currentPos = getPos(toFire.GetRange(0, 18));
+            speed += (posMemory - currentPos).magnitude;
+            posMemory = currentPos;
 
 
             // ==== APPLY output in the simulation ==================================
@@ -167,7 +175,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // ====  STOP ==========================================================
             if (increment >= max_increment || dist_arrival <0.01 )
             {
-                eval = calcEval(dist_arrival, increment);
+                eval = calcEval(dist_arrival, increment, speed);
                 //Debug.Log("endEval : "+eval);
                 neuroNet.setEvalValue(eval);
                 Destroy(tansegrity);
@@ -176,25 +184,34 @@ public class LinkTansegrity_IA : MonoBehaviour {
         }
     }
 
-    private double calcEval(double dist_arrival, double nb_increment)
+    private Vector3 getPos(List<double> pos)
+    {
+        //pos[1:3] first end of first stick, pos[4:6] second end of first stick
+        Vector3 res = new Vector3(((float) pos[0] + (float) pos[3] + (float) pos[6] + (float) pos[9] + (float) pos[12] + (float) pos[15])/6,
+                                  ((float) pos[1] + (float) pos[4] + (float) pos[7] + (float) pos[10] + (float) pos[13] + (float) pos[16]) / 6,
+                                  ((float) pos[2] + (float) pos[5] + (float) pos[8] + (float) pos[11] + (float) pos[14] + (float) pos[17]) / 6);
+        return res;
+    }
+
+    private double calcEval(double dist_arrival, double nb_increment, double speed)
     {
         double val;
 
-        if(increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
-        {
-            // it is already normalized
-            // val [0,1] -> [0,0.5]  
-            //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
-            val = (1 - dist_arrival) / 2;
-        }
-        else
-        {
-            // normalisation
-            val = increment / max_increment;
-            // sigmoide val [0,1] -> [0.5, 1]
-            val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
-        }
-
+        //if (increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
+        //{
+        //    // it is already normalized
+        //    // val [0,1] -> [0,0.5]  
+        //    //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+        //    val = (1 - dist_arrival) / 2;
+        //}
+        //else
+        //{
+        //    // normalisation
+        //    val = 0.5+ (1-increment / max_increment);
+        //    // sigmoide val [0,1] -> [0.5, 1]
+        //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
+        //}
+        val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
 
         return val;
     }

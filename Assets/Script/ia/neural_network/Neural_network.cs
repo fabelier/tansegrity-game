@@ -146,8 +146,8 @@ namespace Nn {
                 throw new System.Exception();
             }
 
-            // tout les input 0<...<1
-            // fait le transfert layer par layer des input
+            // tout les input -1<...<1
+            // fait le transfert layer par layer des inputs
             double control;
             double threashold = 0; // advice = 0
             bool tmp_output;
@@ -179,7 +179,7 @@ namespace Nn {
                             output.Add(tmp_output);
                         }
                     }
-                    if(control == -1) // Gestion des Execption
+                    if(control == -1) // Gestion des Exception
                     {
                         Debug.Log("one Neuron returned -1 !!");
                         throw new System.Exception("stop in Neural_network.fire(). got bad value");
