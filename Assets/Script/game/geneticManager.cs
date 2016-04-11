@@ -78,14 +78,8 @@ namespace Assets.Script.game
 
             if (GUILayout.Button("Save"))
             {
-                OnDestroy();
+                gradientDescent.WriteToXmlFile("savedEvolution/test1.xml", GD);
             }
-        }
-
-
-        void OnDestroy()
-        {
-            gradientDescent.WriteToXmlFile("savedEvolution/test1.xml", GD);
         }
     }
 }

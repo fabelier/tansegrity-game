@@ -41,9 +41,9 @@ public class Spring : MonoBehaviour {
 		transform.LookAt (join1.position);
 		transform.Rotate (90.0f, 0.0f, 0.0f);
 
-		transform.localScale = new Vector3(0.1f,len*0.5f  ,0.1f);
+		transform.localScale = new Vector3(0.1f,len*0.5f ,0.1f);
 
-		raideur = Mathf.Lerp (raideur, raideurVisee, 0.017f);
+		raideur = Mathf.Lerp (raideur, raideurVisee, 0.051f);
 
 	}
 
