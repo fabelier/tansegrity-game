@@ -206,7 +206,7 @@ namespace Nn
         {
             try
             {
-                return activation(combinaison(inputs));
+                return activation(combinaison(inputs), 0.4);
             }
             catch
             {
@@ -234,7 +234,11 @@ namespace Nn
 
             // ACTIVATION FUNCTION
             double res;
-            res = 2 / (1 + Mathf.Exp( (float) (-lambda * val))) -1;  // sigmoid function
+            if (val < 0.5) // heaviside
+                res = 0;
+            else
+                res = 1;
+            //res = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
             this.fire_val = res;
             //Debug.Log("val : " + val+"res : "+res);
             return res;
