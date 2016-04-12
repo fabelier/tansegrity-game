@@ -14,12 +14,13 @@ namespace Assets.Script.game
     {
         public string state;
         gradientDescent GD;
+        GameObject gameManager;
 
         void Start()
         {
+            gameManager = GameObject.Find("GameManager(Clone)");
             state = "first_frame";
             Application.runInBackground = true;
-
         }
 
         void Update()
@@ -27,13 +28,15 @@ namespace Assets.Script.game
             //Debug.Log(state);
             if (state == "first_frame")
             {
-                int load = 0;
-                if (load == 1)
+                bool load = gameManager.GetComponent<GameManager>().getLoad();
+                if (load == true)
                 {
+                    Debug.Log("load == true");
                     GD = new gradientDescent(gradientDescent.ReadFromXmlFile<gradientDescent>("savedEvolution/test1.xml"));
                 }
-                else
+                else if (load == false)
                 {
+                    Debug.Log("load == false");
                     int nb_iterations = 10000;
                     int nb_indiv_in_pop = 32;
                     bool doTournament = true;
