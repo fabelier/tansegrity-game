@@ -51,25 +51,17 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     // Use this for a play with a trained Neural network
     void Start () {
-        Vector3 tmp1,tmp2,tmp3,tmp4;
 
         isFinished = false;
         isInit = true;
+
         Object loadedObject = Resources.Load("Tansegrity");
-        //Debug.LogWarning("loaded object: " + loadedObject);
         tansegrity = Instantiate(loadedObject) as GameObject;
+
         springManager = tansegrity.GetComponent<SpringManager>() as SpringManager;
 
         // get the limits of the terrain
-
-        tmp1 = GameObject.Find("wall 1").transform.position;
-        tmp2 = GameObject.Find("wall 2").transform.position;
-        tmp3 = GameObject.Find("wall 3").transform.position;
-        tmp4 = GameObject.Find("wall 4").transform.position;
-
-        max = new Vector3( Mathf.Max(Mathf.Abs(tmp1.x),  Mathf.Abs(tmp2.x),  Mathf.Abs(tmp3.x),  Mathf.Abs(tmp4.x)),
-                           10,
-                          Mathf.Max(Mathf.Abs(tmp1.z),  Mathf.Abs(tmp2.z),  Mathf.Abs(tmp3.z), Mathf.Abs(tmp4.z)));
+        setMax();
        
 
 
@@ -79,7 +71,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
       
         increment = 0;
 
-        posMemory = new Vector3(0,0,0);//TODO compute real position based on the gravity center of the 3 sticks
+        posMemory = new Vector3(0,0,0);
 
         // Gestion des stick
         sticks = tansegrity.GetComponentsInChildren<Stick>();
@@ -102,6 +94,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         
         isInit = true;
     }
+    
     // FAIRE un init avec limite de temps ??
 	
 	// Update is called once per frame
@@ -205,21 +198,21 @@ public class LinkTansegrity_IA : MonoBehaviour {
     {
         double val;
 
-        //if (increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
-        //{
-        //    // it is already normalized
-        //    // val [0,1] -> [0,0.5]  
-        //    //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
-        //    val = (1 - dist_arrival) / 2;
-        //}
-        //else
-        //{
-        //    // normalisation
-        //    val = 0.5 + (1 - increment / max_increment);
-        //    // sigmoide val [0,1] -> [0.5, 1]
-        //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
-        //}
-        val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
+        if (increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
+        {
+            // it is already normalized
+            // val [0,1] -> [0,0.5]  
+            //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+            val = (1 - dist_arrival) / 2;
+        }
+        else
+        {
+            // normalisation
+            val = 0.5 + (1 - increment / max_increment);
+            // sigmoide val [0,1] -> [0.5, 1]
+            //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
+        }
+        //val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
 
         return val;
     }
@@ -229,7 +222,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 
-    // check if the 
+    // check if the structure is moving and delete it, if not
     private void isTansMoving(List<bool> output, List<bool> memory, int identicalParam = 50)
     {
 
@@ -242,5 +235,19 @@ public class LinkTansegrity_IA : MonoBehaviour {
             increment = max_increment;
             Debug.Log(" JE NE BOUGE PAS JE ME FAIT SUPPRIMER !!!!");
         }
+    }
+
+    private void setMax()
+    {
+        Vector3 tmp1, tmp2, tmp3, tmp4;
+
+        tmp1 = GameObject.Find("wall 1").transform.position;
+        tmp2 = GameObject.Find("wall 2").transform.position;
+        tmp3 = GameObject.Find("wall 3").transform.position;
+        tmp4 = GameObject.Find("wall 4").transform.position;
+
+        max = new Vector3(Mathf.Max(Mathf.Abs(tmp1.x), Mathf.Abs(tmp2.x), Mathf.Abs(tmp3.x), Mathf.Abs(tmp4.x)),
+                           10,
+                          Mathf.Max(Mathf.Abs(tmp1.z), Mathf.Abs(tmp2.z), Mathf.Abs(tmp3.z), Mathf.Abs(tmp4.z)));
     }
 }

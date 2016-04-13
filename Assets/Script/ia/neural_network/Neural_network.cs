@@ -135,6 +135,17 @@ namespace Nn {
             Debug.Log(str);
         }
 
+        public string size()
+        {
+            
+            string str = string.Format("  nbLayer :" + network.Count + "\n");
+            for (int i = 0; i < network.Count; i++)
+            {
+               str += string.Format("Layer {0}:{1}  ", i, network[i].Count );
+            }
+            return str;
+        }
+
             // = USEFULL METHODS =================
         public List<bool> fire(List<double> network_input)
         {
@@ -151,7 +162,8 @@ namespace Nn {
             double control;
             double threashold = 0; // advice = 0
             bool tmp_output;
-            List<bool> output = new List<bool>();
+            output.Clear();
+            //List<bool> output = new List<bool>();
             for (int i = 0; i < network.Count; i++)  // boucle in network
             {
                 for (int j = 0; j < network[i].Count; j++) // boucle in each layer to set the inputs
@@ -188,6 +200,96 @@ namespace Nn {
             }
             return output;
 
+        }
+
+        public void gradientRetropropagation(List<bool> targetOutput, double lambda = 0.4)
+        {
+
+            if (output.Count == 0) throw new System.Exception("Did you even fire before retropropagate ?");
+            if(targetOutput.Count != output.Count)
+                throw new System.Exception("Bad targetOutput in args");
+
+            List<Neuron> layer;
+            List<double> tmpWeight;
+
+            // set the prediction error of the network 
+            List<List<double>> globalError = new List<List<double>>();
+            for (int i = 0; i < network.Count-1 ; i++){ globalError.Add( new List<double>()) ; }
+
+            List<double> error = predictionError(targetOutput);
+
+            
+            // retroPropagate the error
+            for (int i = network.Count-1; i>=1; i--)  // reverse parse of the network 
+            {
+                layer = network[i];
+                if(i != network.Count -1)    error = new List<double>();
+                for (int j = 0; j < layer.Count; j++)      // in each layer
+                {
+                    // take the output layer 
+                    if (i == network.Count -1 ) // derivate of the neuronal activation fonction
+                        error[j] = error[j] * sigmoidDerivate(layer[j].combinaison());
+                    else
+                    {
+                        tmpWeight = new List<double>();
+                        
+                        foreach (Neuron neuron in network[i+1])  // get weights of the sinapse in beetween the neuron i,j and the next layer
+                        {
+                            tmpWeight.Add(neuron.getWeigth(j + 1)); //  Take care that the fisrt Input is the bias;
+                        }
+                        error.Add(sigmoidDerivate(layer[j].combinaison()) * prod(globalError[i], tmpWeight)); // error is still 
+                    }
+                }
+                globalError[i-1] = error;
+            }
+
+            // CORRECT THE WEIGHTS
+            double weight;
+            for (int i = 1; i < network.Count; i++) // parse the different layers
+            {
+                for (int j = 0; j < network[i].Count; j++) // in layer n
+                {
+                    for (int k = 0; k < network[i-1].Count; k++) // you have to consider fire val from layer n - 1
+                    {
+                        weight = network[i][j].getWeigth(k + 1);
+                        weight += lambda * globalError[i-1][j] * network[i - 1][k].fire_val; // global Error do not have an error for the first layer
+                        network[i][j].setWeight(weight,k + 1);
+                    }
+                }
+            }
+
+        }
+
+        // Return a list containing { -1, 1, 0 }
+        private List<double> predictionError(List<bool> target)
+        {
+            List<double> error = new List<double>();
+            for(int i = 0; i < target.Count ;i++)
+            {
+                if (target[i] == true && output[i] == false) error.Add( 1);
+                else if (target[i] == false && output[i] == true) error.Add( -1);  // il y a une erreur là
+                else error.Add( 0);
+            }
+            return error;
+        }
+
+
+        // return the sigmoid derivate
+        private double sigmoidDerivate(double val, double lambda = 0.2)
+        {
+            return -System.Math.Exp(-lambda * val) / System.Math.Pow((1 + System.Math.Exp(-lambda * val)), 2);
+        }
+
+        // product of two list
+        private double prod(List<double> list1, List<double> list2 )
+        {
+            if (list1.Count != list2.Count) throw new System.Exception("The two list have to have the same size");
+            double val = 0;
+            for (int i = 0; i < list1.Count; i++)
+            {
+                val += list1[i] * list2[i];
+            }
+            return val;
         }
 
     }
