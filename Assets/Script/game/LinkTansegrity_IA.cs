@@ -33,6 +33,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
     // usefull to normalize the pos values
     private Vector3 max;
     private Vector3 min;
+    private Vector3 relMax;
+    private Vector3 relMin;
 
     // code realated
     private bool isInit;
@@ -67,8 +69,10 @@ public class LinkTansegrity_IA : MonoBehaviour {
         // get the limits of the terrain
 
         setMinMax();
- 
 
+        // get the max relative coordinates for the structure
+        relMax = new Vector3(tansegrity.transform.localPosition.x + 2, tansegrity.transform.localPosition.z + 2, tansegrity.transform.localPosition.z + 2);
+        relMin = new Vector3(tansegrity.transform.localPosition.x - 2, tansegrity.transform.localPosition.z - 2, tansegrity.transform.localPosition.z - 2);
 
         //get the goal position
         arrival = GameObject.Find("Arrival").transform.position;
@@ -90,7 +94,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         this.mySelf = mySelf;
         this.color = color;
         //Error gestion
-        if(saved_neuroNet.getNbNeuronAtLayer(0) != 19)
+        if(saved_neuroNet.getNbNeuronAtLayer(0) != 18)
         {
             Debug.Log("Initialized with a Neural network with wrong first layer size : "+ saved_neuroNet.getNbNeuronAtLayer(0));
             throw new System.Exception();
@@ -133,28 +137,31 @@ public class LinkTansegrity_IA : MonoBehaviour {
             posTans = new Vector3(0, 0, 0);
             for (int i = 0; i < sticks.Length; i++) // compute all stats related to the sticks
             {
-                slave = sticks[i].ObjectA.transform.position; //  stick first end
-                slave = dividVect(slave-min, max-min);                 //  Normalise slave
+                slave = sticks[i].transform.localPosition + sticks[i].ObjectA.transform.localPosition; //  stick first end
+                slave = dividVect(slave-relMin, relMax-relMin);                 //  Normalise slave
                 posStick.Add(slave);
-                posTans += slave;                             //at the end compute the barycenter of the tansegrity
+                posTans += sticks[i].transform.position;                             //at the end compute the barycenter of the tansegrity
                 toFire.Add((double)slave.x);
                 toFire.Add((double)slave.y);
                 toFire.Add((double)slave.z);
-                slave = sticks[i].ObjectB.transform.position; //  stick second end
-                slave = dividVect(slave-min, max-min);                 //  Normalise slave
+                slave = sticks[i].transform.localPosition + sticks[i].ObjectB.transform.localPosition; //  stick second end
+                slave = dividVect(slave - relMin, relMax - relMin);                 //  Normalise slave
                 posStick.Add(slave);
-                posTans += slave;                             //at the end compute the barycenter of the tansegrity
                 toFire.Add((double)slave.x);
                 toFire.Add((double)slave.y);
                 toFire.Add((double)slave.z);
-
             }
-
+            //for(int i = 0; i < toFire.Count; i++)
+            //{
+            //    if (toFire[i] > 1)
+            //        Debug.Log(toFire[i]);
+            //}
             // Get distances of the tansegrity from the finish
-            posTans = posTans / (sticks.Length * 2);
+            posTans = posTans / (sticks.Length);
+            posTans = dividVect((posTans - min), (max - min));
             slave = posTans - arrival;
             dist_arrival = slave.magnitude;
-            toFire.Add(dist_arrival);
+            //toFire.Add(dist_arrival);
 
             // =========  fire  =====================================================
             //Debug.Log("toFire : "+toFire.ToString());
@@ -200,22 +207,22 @@ public class LinkTansegrity_IA : MonoBehaviour {
     {
         double val;
 
-        if (increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
-        {
-            // it is already normalized
-            // val [0,1] -> [0,0.5]  
-            //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
-            val = (1 - dist_arrival) / 2;
-        }
-        else
-        {
-            // normalisation
-            val = 0.5 + (1 - increment / max_increment);
-            // sigmoide val [0,1] -> [0.5, 1]
-            //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
-        }
-        //val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
-
+        //if (increment == max_increment)   // si le tansegrity n'est pas arrivé au pt d'arrivé, il ne peu pas obtenir plus de 0.5/1
+        //{
+        //    // it is already normalized
+        //    // val [0,1] -> [0,0.5]  
+        //    //val = 1 / (2 + 20 * System.Math.Exp(100 *  dist_arrival));
+        //    val = (1 - dist_arrival) / 2;
+        //}
+        //else
+        //{
+        //    // normalisation
+        //    val = 0.5 + (1 - increment / max_increment);
+        //    // sigmoide val [0,1] -> [0.5, 1]
+        //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
+        //}
+        val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
+        //val = (speed / increment);
         return val;
     }
 

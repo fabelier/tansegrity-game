@@ -23,6 +23,13 @@ namespace geneticAlgo
             randomlyGeneratedNbNeuronsByLayers = new List<int>(new int[] { 19, 32, 8, 3 });
         }
 
+        public geneticOperator(List<int> nbNeuronByLayers)
+        {
+            crossoverPercent = 0.1;
+            mutationPercent = 0.7;
+            rand = new System.Random();
+            randomlyGeneratedNbNeuronsByLayers = new List<int>(nbNeuronByLayers);
+        }
         //crossoverPercent + mutationPercent must be <= 1 (if <1 the rest will be the percentage of newly generated indivs)
         public geneticOperator(double crossoverPercent, double mutationPercent)
         {
@@ -57,15 +64,8 @@ namespace geneticAlgo
             int Neuron_num_Crossingover = rand.Next(0, A.getNbNeuronAtLayer(layer_num_Crossingover)-1);
 
             List<Nn.Neuron> layer_CrossingoverA = new List<Nn.Neuron>(A.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
-            try
-            {
-                layer_CrossingoverA.AddRange(B.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, B.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
-            }
-            catch
-            {
-                Debug.Log("erreur pendant crossingover : layer_num : " + layer_num_Crossingover + ", neuron_num : " + Neuron_num_Crossingover + ", number_neuron_at_layer : B : " + B.getNbNeuronAtLayer(layer_num_Crossingover)+" A : "+ A.getNbNeuronAtLayer(layer_num_Crossingover));
-            }
 
+            layer_CrossingoverA.AddRange(B.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, B.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
             List<Nn.Neuron> layer_CrossingoverB = new List<Nn.Neuron>(B.getLayer(layer_num_Crossingover).GetRange(0, Neuron_num_Crossingover));
             layer_CrossingoverB.AddRange(A.getLayer(layer_num_Crossingover).GetRange(Neuron_num_Crossingover, A.getNbNeuronAtLayer(layer_num_Crossingover) - Neuron_num_Crossingover));
 
@@ -93,9 +93,12 @@ namespace geneticAlgo
             int layer_num_mutation = rand.Next(1, A.getNbLayer());//weights of the first layer must stay 1
             int Neuron_num_mutation = rand.Next(0, A.getNbNeuronAtLayer(layer_num_mutation));
             int weigth_num_mutation = rand.Next(0, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getNbWeigths());
-            double mutation = (rand.NextDouble()*2-1)/10; //mutation between -0.1 and 0.1
+            double mutation = (rand.NextDouble()*2-1); //mutation between -0.1 and 0.1
             indiv mutator = new indiv(A, -1);
-            mutator.setDataAtPos(layer_num_mutation, Neuron_num_mutation, weigth_num_mutation, A.getNeuron(layer_num_mutation, Neuron_num_mutation).getWeigth(weigth_num_mutation) + mutation);
+            double newWeigth = A.getNeuron(layer_num_mutation, Neuron_num_mutation).getWeigth(weigth_num_mutation) + mutation;
+            if (newWeigth > 1) newWeigth = 1;
+            else if (newWeigth < -1) newWeigth = -1;
+            mutator.setDataAtPos(layer_num_mutation, Neuron_num_mutation, weigth_num_mutation, newWeigth);
             return mutator;
         }
 
@@ -141,11 +144,11 @@ namespace geneticAlgo
             {
                 if (i < nbrMutations)
                 {
-                    newPop.Add(mutate(pop[i]));
+                    newPop.Add(mutate(shuffle[i]));
                 }
                 else if(i < nbrMutations + nbrCrossover-1)
                 {
-                    newPop.AddRange(crossover(pop[i], pop[i + 1]));
+                    newPop.AddRange(crossover(shuffle[i], shuffle[i + 1]));
                 }
                 else
                 {

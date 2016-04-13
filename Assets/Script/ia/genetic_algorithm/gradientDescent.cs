@@ -44,20 +44,20 @@ namespace geneticAlgo
             this.iteration = 0;
             this.nbIterationMax = nbIterationMax;
             this.sizePop = sizePop;
-            this.GO = new geneticOperator();
+            this.GO = new geneticOperator(nbNeuronByLayers);
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
             this.bestIndiv = new indiv(pop[0]);
         }
 
         //same but with a set percentage of the pop which will be mutated and crossovered
-        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, double mutantPercent, double crossoveredPercent, bool DoTournament)
+        public gradientDescent(int nbIterationMax, int sizePop, List<int> nbNeuronByLayers, bool DoTournament, double mutantPercent, double crossoveredPercent)
         {
             this.DoTournament = DoTournament;
             this.iteration = 0;
             this.nbIterationMax = nbIterationMax;
             this.sizePop = sizePop;
-            this.GO = new geneticOperator(mutantPercent, crossoveredPercent);
+            this.GO = new geneticOperator(mutantPercent, crossoveredPercent, nbNeuronByLayers);
             this.rand = new System.Random();
             createPop(nbNeuronByLayers);
             this.bestIndiv = new indiv(pop[0]);
@@ -104,7 +104,7 @@ namespace geneticAlgo
                         pop[ind].eval();
                     }
                 }
-                bestIndiv.eval(false);//just 
+                bestIndiv.eval(false);//just to see the best indiv in a different color in the simu
             }
         }
 
@@ -118,8 +118,9 @@ namespace geneticAlgo
 
                 // selection by tournament
                 else
+                {
                     pop = tournamentSelection(pop, sizePop);
-
+                }
                 bestIndiv = new indiv(pop[0]);
 
                 //print the best indiv every 10% of the nbIterationMax
@@ -184,6 +185,8 @@ namespace geneticAlgo
                     somme += competitors[i].getEvalValue();
                     proba.Add(somme);
                 }
+                if (somme == 0)
+                    Debug.Log("evalValues = 0 so can't make a tournament");
                 for (int d = 0; d < proba.Count; d++)
                 {
                     proba[d] /= somme;
