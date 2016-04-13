@@ -217,10 +217,21 @@ namespace Nn
         }
 
         // Function that sum up the weigthed values returned by the input neurons 
-        public double combinaison(List<Input> inputs) {
+        private double combinaison(List<Input> inputs) {
             double val = 0;
 
             for (int i = 0; i < inputs.Count; i++){//the first one is the bias with an input of 1
+                val = val + inputs[i].weight * inputs[i].input;
+            }
+
+            return val;
+        }
+        public double combinaison()
+        {
+            double val = 0;
+
+            for (int i = 0; i < inputs.Count; i++)
+            {//the first one is the bias with an input of 1
                 val = val + inputs[i].weight * inputs[i].input;
             }
 
@@ -234,11 +245,14 @@ namespace Nn
 
             // ACTIVATION FUNCTION
             double res;
-            if (val < 0.5) // heaviside
-                res = 0;
-            else
-                res = 1;
-            //res = 1 / (1 + Mathf.Exp( (float) (-lambda * val)));  // sigmoid function
+            res = 1 / (1 + System.Math.Exp(lambda *val));  // sigmoid function
+
+            //if (val < 0.5) // heaviside
+            //    res = 0;
+            //else
+            //    res = 1;
+          
+
             this.fire_val = res;
             //Debug.Log("val : " + val+"res : "+res);
             return res;

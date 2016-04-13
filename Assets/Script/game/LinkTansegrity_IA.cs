@@ -52,29 +52,22 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     // Use this for a play with a trained Neural network
     void Start () {
-        Vector3 tmp1,tmp2,tmp3,tmp4;
 
         isFinished = false;
+
         max_increment = 1000;
         sinceWhen = 0;
         memory = new List<bool>();
         //isInit = true;
         Object loadedObject = Resources.Load("Tansegrity");
-        //Debug.LogWarning("loaded object: " + loadedObject);
         tansegrity = Instantiate(loadedObject) as GameObject;
+
         springManager = tansegrity.GetComponent<SpringManager>() as SpringManager;
 
         // get the limits of the terrain
 
-        tmp1 = GameObject.Find("wall 1").transform.position;
-        tmp2 = GameObject.Find("wall 2").transform.position;
-        tmp3 = GameObject.Find("wall 3").transform.position;
-        tmp4 = GameObject.Find("wall 4").transform.position;
-
-        max = new Vector3(Mathf.Max(tmp1.x, tmp2.x, tmp3.x, tmp4.x),
-                           10,
-                          Mathf.Max(tmp1.z, tmp2.z, tmp3.z, tmp4.z));
-        min = new Vector3(Mathf.Min(tmp1.x, tmp2.x, tmp3.x, tmp4.x), 0, Mathf.Min(tmp1.z, tmp2.z, tmp3.z, tmp4.z));
+        setMinMax();
+ 
 
 
         //get the goal position
@@ -83,7 +76,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
       
         increment = 0;
 
-        posMemory = new Vector3(0,0,0);//TODO compute real position based on the gravity center of the 3 sticks
+        posMemory = new Vector3(0,0,0);
 
         // Gestion des stick
         sticks = tansegrity.GetComponentsInChildren<Stick>();
@@ -106,6 +99,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         
         isInit = true;
     }
+    
     // FAIRE un init avec limite de temps ??
 	
 	// Update is called once per frame
@@ -230,8 +224,10 @@ public class LinkTansegrity_IA : MonoBehaviour {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 
+
     // check if the 
     private void isTansMoving(List<bool> output, int identicalParam = 500)
+
     {
 
         if (output.SequenceEqual(memory))
@@ -246,5 +242,20 @@ public class LinkTansegrity_IA : MonoBehaviour {
             increment = max_increment;
         }
         memory = output;
+    }
+
+    private void setMinMax()
+    {
+        Vector3 tmp1, tmp2, tmp3, tmp4;
+
+        tmp1 = GameObject.Find("wall 1").transform.position;
+        tmp2 = GameObject.Find("wall 2").transform.position;
+        tmp3 = GameObject.Find("wall 3").transform.position;
+        tmp4 = GameObject.Find("wall 4").transform.position;
+
+        max = new Vector3(Mathf.Max(tmp1.x, tmp2.x, tmp3.x, tmp4.x),
+                           10,
+                          Mathf.Max(tmp1.z, tmp2.z, tmp3.z, tmp4.z));
+        min = new Vector3(Mathf.Min(tmp1.x, tmp2.x, tmp3.x, tmp4.x), 0, Mathf.Min(tmp1.z, tmp2.z, tmp3.z, tmp4.z));
     }
 }
