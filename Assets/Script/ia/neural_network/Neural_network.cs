@@ -160,7 +160,7 @@ namespace Nn {
             // tout les input -1<...<1
             // fait le transfert layer par layer des inputs
             double control;
-            double threashold = 0; // advice = 0
+            double threashold = 0.5; // advice = 0
             bool tmp_output;
             output.Clear();
             //List<bool> output = new List<bool>();

@@ -38,7 +38,14 @@ public class DataTrain : MonoBehaviour{
         {
             neuralTrain = new NeuralTrain(data);
             neuralTrain.Train();
+            state = "Check the learning";
         }
+        else if(state == "Check the learning")
+        {
+            GameObject link = Instantiate(Resources.Load("Link")) as GameObject;
+            link.GetComponent<LinkTansegrity_IA>().Init(this, link);
+        }
+
 
     }
 }
