@@ -20,8 +20,6 @@ public class SpringManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-
 		if(Input.GetButton("Fire1") || toControl[0] == true) {
 			//Debug.Log("Fire1");
 			upRaideur(toControl1);

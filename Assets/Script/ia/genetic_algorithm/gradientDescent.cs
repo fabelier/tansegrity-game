@@ -79,7 +79,7 @@ namespace geneticAlgo
         // ====== METHODS ==================
 
         //main loop will use generateNeighbors, runEvals, and then changePop on each iteration :
-        //generateNeighbors : select by tournament some of the best indivs of the pop, then apply genetic operation on them to create other indivs
+        //generateNeighbors : apply genetic operation on pop to create other indivs
         //runEvals : run the eval on the new pop    
         //changePop : select sizePop nbr of indiv in this new pop, and go to the next iteration
 
@@ -112,6 +112,7 @@ namespace geneticAlgo
         {
             if (iteration < nbIterationMax)
             {
+                pop = pop.OrderByDescending(x => x.getEvalValue()).ToList();
                 // simple selection
                 if (DoTournament == false)
                     pop = simpleSelection(pop);
@@ -121,13 +122,13 @@ namespace geneticAlgo
                 {
                     pop = tournamentSelection(pop, sizePop);
                 }
+                if (pop[0].getEvalValue() < bestIndiv.getEvalValue())
+                    Debug.Log("erreur : best indiv devient moins bon");
                 bestIndiv = new indiv(pop[0]);
 
-                //print the best indiv every 10% of the nbIterationMax
-                //if (iteration % (nbIterationMax / 10) == 0)
-                //{
+                //print the best
                 Debug.Log(string.Format("iteration : {0}, best_indiv fitness : {1}\nbest_indiv : {2}", iteration, bestIndiv.getEvalValue(), bestIndiv));
-                //}
+
                 iteration += 1;
             }
         }
@@ -149,7 +150,6 @@ namespace geneticAlgo
         // return a pop resized with sizePop indivs with the best evalValues
         public List<indiv> simpleSelection(List<indiv> pop)
         {
-            pop = pop.OrderByDescending(x => x.getEvalValue()).ToList();
             return pop.GetRange(0, sizePop);
         }
 
@@ -167,7 +167,7 @@ namespace geneticAlgo
                     max = pop[i];
             }
             List<indiv> winners = new List<indiv>();
-            winners.Add(max);
+            winners.Add(new indiv(max));
             List<indiv> competitors = new List<indiv>(pop);
             List<double> proba;
             indiv firstCompetitor = new indiv();
@@ -238,7 +238,7 @@ namespace geneticAlgo
             }
         }
 
-
+        //save evolution
         public static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
         {
             TextWriter writer = null;
@@ -255,7 +255,7 @@ namespace geneticAlgo
             }
         }
 
-
+        //load evolution
         public static T ReadFromXmlFile<T>(string filePath) where T : new()
         {
             TextReader reader = null;

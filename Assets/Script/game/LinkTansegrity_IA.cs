@@ -20,7 +20,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
     // Sticks
     private Stick[] sticks;
-    private List<Vector3> posStick;
     
 
     // for the IA
@@ -33,8 +32,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
     // usefull to normalize the pos values
     private Vector3 max;
     private Vector3 min;
-    private Vector3 relMax;
-    private Vector3 relMin;
 
     // code realated
     private bool isInit;
@@ -57,7 +54,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
 
         isFinished = false;
 
-        max_increment = 1000;
+        max_increment = 2000;
         sinceWhen = 0;
         memory = new List<bool>();
         //isInit = true;
@@ -69,10 +66,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
         // get the limits of the terrain
 
         setMinMax();
-
-        // get the max relative coordinates for the structure
-        relMax = new Vector3(tansegrity.transform.localPosition.x + 2, tansegrity.transform.localPosition.z + 2, tansegrity.transform.localPosition.z + 2);
-        relMin = new Vector3(tansegrity.transform.localPosition.x - 2, tansegrity.transform.localPosition.z - 2, tansegrity.transform.localPosition.z - 2);
 
         //get the goal position
         arrival = GameObject.Find("Arrival").transform.position;
@@ -116,6 +109,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         {
             if (increment == 0)
             {
+
                 if (color) // for the last best indiv.
                 {
                     for (int i = 0; i < 3; i++)
@@ -133,31 +127,23 @@ public class LinkTansegrity_IA : MonoBehaviour {
             // Get Environment statistics 
             // each stick end coordinates
 
-            posStick = new List<Vector3>();
-            posTans = new Vector3(0, 0, 0);
+            posTans = new Vector3(0, 0, 0);// the barycenter of the tansegrity
+            for (int i = 0; i < sticks.Length; i++)
+                posTans += sticks[i].transform.position;
+            posTans /= sticks.Length;
             for (int i = 0; i < sticks.Length; i++) // compute all stats related to the sticks
             {
-                slave = sticks[i].transform.localPosition + sticks[i].ObjectA.transform.localPosition; //  stick first end
-                slave = dividVect(slave-relMin, relMax-relMin);                 //  Normalise slave
-                posStick.Add(slave);
-                posTans += sticks[i].transform.position;                             //at the end compute the barycenter of the tansegrity
+                slave = sticks[i].ObjectA.transform.position - posTans;// pos relative to the center
                 toFire.Add((double)slave.x);
                 toFire.Add((double)slave.y);
                 toFire.Add((double)slave.z);
-                slave = sticks[i].transform.localPosition + sticks[i].ObjectB.transform.localPosition; //  stick second end
-                slave = dividVect(slave - relMin, relMax - relMin);                 //  Normalise slave
-                posStick.Add(slave);
+                slave = sticks[i].ObjectB.transform.position - posTans;
                 toFire.Add((double)slave.x);
                 toFire.Add((double)slave.y);
                 toFire.Add((double)slave.z);
             }
-            //for(int i = 0; i < toFire.Count; i++)
-            //{
-            //    if (toFire[i] > 1)
-            //        Debug.Log(toFire[i]);
-            //}
+
             // Get distances of the tansegrity from the finish
-            posTans = posTans / (sticks.Length);
             posTans = dividVect((posTans - min), (max - min));
             slave = posTans - arrival;
             dist_arrival = slave.magnitude;
@@ -168,6 +154,8 @@ public class LinkTansegrity_IA : MonoBehaviour {
             output = neuroNet.getNn().fire(toFire);
 
             // === Check if the simulation move ====================================
+            if (increment == 1)
+                memory = output;
             if (increment >1)
                 isTansMoving(output);
             currentPos = posTans;
@@ -188,7 +176,6 @@ public class LinkTansegrity_IA : MonoBehaviour {
             {
                 springManager.setToControl(2);
             }
-
             //Debug.Log("Increment : "+ increment+"DistArrival : " + dist_arrival);
             // ====  STOP ==========================================================
             if (increment >= max_increment || dist_arrival <0.01 )
@@ -221,7 +208,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         //    // sigmoide val [0,1] -> [0.5, 1]
         //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
         //}
-        val = (1 - dist_arrival) * (speed / increment);// speed/increment represent the mean of the speed
+        val = (1 - dist_arrival);// * (speed * 60 / increment);// speed*60/increment represent the mean of the speed in m/sec
         //val = (speed / increment);
         return val;
     }
@@ -230,25 +217,30 @@ public class LinkTansegrity_IA : MonoBehaviour {
     {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
-
+    private Vector3 multiplVect(Vector3  a, Vector3 b)
+    {
+        return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
 
     // check if the 
     private void isTansMoving(List<bool> output, int identicalParam = 500)
 
     {
 
-        if (output.SequenceEqual(memory))
+        if (output[0] == memory[0] && output[1] == memory[1] && output[2] == memory[2])
         {
             sinceWhen += 1;
 
         }
-        else sinceWhen = 0;
-
+        else
+        {
+            sinceWhen = 0;
+        }
         if (sinceWhen == identicalParam)
         {
             increment = max_increment;
         }
-        memory = output;
+        memory = new List<bool>(output);
     }
 
     private void setMinMax()
