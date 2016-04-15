@@ -15,6 +15,7 @@ namespace Assets.Script.game
         public string state;
         gradientDescent GD;
         GameObject gameManager;
+        private bool load = false;
 
         void Start()
         {
@@ -28,8 +29,7 @@ namespace Assets.Script.game
             //Debug.Log(state);
             if (state == "first_frame")
             {
-                //bool load = gameManager.GetComponent<GameManager>().getLoad();
-                bool load = false;
+                load = gameManager.GetComponent<GameManager>().getLoad();
                 if (load == true)
                 {
                     Debug.Log("load == true");
