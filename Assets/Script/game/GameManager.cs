@@ -9,21 +9,35 @@ public class GameManager : MonoBehaviour {
     public bool getLoad() {
         return load;
     }
+    private bool guiIsAvailable = true;
+    public bool simu = true;
 
     void Update() {
         //Debug.Log(load);
     }
 
-    public bool simu = true;
     void OnGUI() {
-        simu = GUI.Toggle(new Rect(300, 250, 130, 20), simu, "load");
-        GUI.enabled = true;
-        if (GUI.Button(new Rect(300, 300, 150, 20), "SIMULATION")) {
-            load = simu;
-            ChangeToScene(1);
-        }
-        if (GUI.Button(new Rect(50, 300, 150, 20), "PLAY")) {
-            Debug.Log("menu play");
+        if(guiIsAvailable){
+            GUIStyle style = new GUIStyle();
+
+            int w = Screen.width, h = Screen.height;
+
+            Vector3 toggleSize = new Vector3(130,20,0), 
+                simuButtonSize = new Vector3(150,20,0), 
+                playButtonSize = new Vector3(150,20,0);
+
+            style.fontSize = 30;
+
+            simu = GUI.Toggle(new Rect(300, 250, 130, 20), simu, "load", style);
+            GUI.enabled = true;
+            if (GUI.Button(new Rect(300, 300, 150, 20), "SIMULATION", style)) {
+                load = simu;
+                guiIsAvailable = false;
+                ChangeToScene(1);
+            }
+            if (GUI.Button(new Rect(50, 300, 150, 20), "PLAY", style)) {
+                Debug.Log("menu play");
+            }
         }
     }
 
