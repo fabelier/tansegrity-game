@@ -11,31 +11,44 @@ public class GameManager : MonoBehaviour {
     }
     private bool guiIsAvailable = true;
     public bool simu = true;
+    public GUISkin menuSkin = null;
 
     void Update() {
         //Debug.Log(load);
     }
 
+    void Start() {
+        menuSkin = Resources.Load("menuSkin") as GUISkin;
+    }
+
     void OnGUI() {
         if(guiIsAvailable){
             GUIStyle style = new GUIStyle();
+            if(menuSkin != null){
+                GUI.skin = menuSkin;
+            }
+            // GUI.color = Color.yellow;
+            // GUI.backgroundColor = Color.black;
 
             int w = Screen.width, h = Screen.height;
 
-            Vector3 toggleSize = new Vector3(130,20,0), 
+            Vector3 toggleSize = new Vector3(150,40,0), 
                 simuButtonSize = new Vector3(150,20,0), 
-                playButtonSize = new Vector3(150,20,0);
+                playButtonSize = new Vector3(150,20,0),
+             backgroundBoxSize = new Vector3(500,200,0);
 
-            style.fontSize = 30;
+            // style.fontSize = 30;
 
-            simu = GUI.Toggle(new Rect(300, 250, 130, 20), simu, "load", style);
+            GUI.Box(new Rect(w/2 - backgroundBoxSize.x/2, h/2 - backgroundBoxSize.y/2, backgroundBoxSize.x, backgroundBoxSize.y), "TansegrityBot");
+
+            simu = GUI.Toggle(new Rect(w/2 - toggleSize.x/2 + 100, h/2 - toggleSize.y/2 - 20, toggleSize.x, toggleSize.y), simu, "load");
             GUI.enabled = true;
-            if (GUI.Button(new Rect(300, 300, 150, 20), "SIMULATION", style)) {
+            if (GUI.Button(new Rect(w/2 - simuButtonSize.x/2 + 100, h/2 - simuButtonSize.y/2 + 30, simuButtonSize.x, simuButtonSize.y), "SIMULATION")) {
                 load = simu;
                 guiIsAvailable = false;
                 ChangeToScene(1);
             }
-            if (GUI.Button(new Rect(50, 300, 150, 20), "PLAY", style)) {
+            if (GUI.Button(new Rect(w/2 - playButtonSize.x/2 - 150, h/2 - playButtonSize.y/2, playButtonSize.x, playButtonSize.y), "PLAY")) {
                 Debug.Log("menu play");
             }
         }
