@@ -208,7 +208,7 @@ public class LinkTansegrity_IA : MonoBehaviour {
         //    // sigmoide val [0,1] -> [0.5, 1]
         //    //val = 0.5 + 0.5 / (1 + 0.01 * System.Math.Exp(10 * val));
         //}
-        val = (1 - dist_arrival);// * (speed * 60 / increment);// speed*60/increment represent the mean of the speed in m/sec
+        val = (1 - dist_arrival) * (speed * 60 / increment);// speed*60/increment represent the mean of the speed in m/sec
         //val = (speed / increment);
         return val;
     }

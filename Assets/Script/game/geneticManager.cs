@@ -29,7 +29,8 @@ namespace Assets.Script.game
             //Debug.Log(state);
             if (state == "first_frame")
             {
-                load = gameManager.GetComponent<GameManager>().getLoad();
+                //load = gameManager.GetComponent<GameManager>().getLoad();
+                load = false;
                 if (load == true)
                 {
                     Debug.Log("load == true");
@@ -42,8 +43,8 @@ namespace Assets.Script.game
                     int nb_indiv_in_pop = 32;
                     bool doTournament = true;
                     double mutationPercent = 0.8;
-                    double crossoverPercent = 0.2;
-                    List<int> nb_neurons_by_layers = new List<int>(new int[] { 18, 32, 8, 3 });
+                    double crossoverPercent = 0.1;
+                    List<int> nb_neurons_by_layers = new List<int>(new int[] { 18, 16, 8, 3 });
                     GD = new gradientDescent(nb_iterations, nb_indiv_in_pop, nb_neurons_by_layers, doTournament, mutationPercent, crossoverPercent);
                 }
 
